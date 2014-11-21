@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = {
-	db: 'mongodb://localhost/groupquiz-test',
+	db: 'mongodb://localhost/groupquiz',
 	port: 3001,
 	app: {
 		title: 'GroupQuiz - Test Environment'

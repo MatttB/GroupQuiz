@@ -9,12 +9,14 @@ angular.module('quizzes').controller('QuizzesController', ['$scope', '$statePara
 		$scope.create = function() {
 			// Create new Quiz object
 			var quiz = new Quizzes ({
-				name: this.name
+				name: this.name,
+				desc: this.desc,
+				questions: this.questions
 			});
 
 			// Redirect after save
 			quiz.$save(function(response) {
-				$location.path('quizzes/' + response._id);
+				$location.path('quizzes/' + response._id + '/edit');
 
 				// Clear form fields
 				$scope.name = '';

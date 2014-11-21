@@ -13,17 +13,15 @@ module.exports = {
 	assets: {
 		lib: {
 			css: [
-				/**
+				/*
 				'public/lib/bootstrap/dist/css/bootstrap.css',
 				'public/lib/bootstrap/dist/css/bootstrap-theme.css'
-			 	///**
-				 **/
-				'http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/css/bootstrap.min.css',
-				'http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/css/bootstrap-theme.min.css'
-				//**/
+				 */
+				'https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css',
+				'https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css'
 			],
 			js: [
-				/**
+				/*
 				'public/lib/angular/angular.js',
 				'public/lib/angular-resource/angular-resource.js', 
 				'public/lib/webular-cookies/angular-cookies.js',
@@ -33,19 +31,17 @@ module.exports = {
 				'public/lib/angular-ui-router/release/angular-ui-router.js',
 				'public/lib/angular-ui-utils/ui-utils.js',
 				'public/lib/angular-bootstrap/ui-bootstrap-tpls.js'
-				//**/
-				///**
-				'http://cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.20/angular.min.js',
-				'http://cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.20/angular-resource.min.js',
-				'http://cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.20/angular-cookies.min.js',
-				'http://cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.20/angular-animate.min.js',
-				'http://cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.20/angular-touch.min.js',
-				'http://cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.20/angular-sanitize.min.js',
+				*/
+				'http://ajax.googleapis.com/ajax/libs/angularjs/1.2.20/angular.min.js',
+				'http://ajax.googleapis.com/ajax/libs/angularjs/1.2.20/angular-resource.min.js',
+				'http://ajax.googleapis.com/ajax/libs/angularjs/1.2.20/angular-cookies.min.js',
+				'http://ajax.googleapis.com/ajax/libs/angularjs/1.2.20/angular-animate.min.js',
+				'http://ajax.googleapis.com/ajax/libs/angularjs/1.2.20/angular-touch.min.js',
+				'http://ajax.googleapis.com/ajax/libs/angularjs/1.2.20/angular-sanitize.min.js',
 
-				'http://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.11/angular-ui-router.min.js',
-				'http://cdnjs.cloudflare.com/ajax/libs/angular-ui-utils/0.1.1/angular-ui-utils.min.js',
-				'http://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.11.2/ui-bootstrap-tpls.min.js'
-				//**/
+				'http://cdn.jsdelivr.net/angular.ui-router/0.2.11/angular-ui-router.min.js',
+				'http://cdn.bootcss.com/angular-ui-utils/0.1.1/angular-ui-utils.min.js',
+				'http://libs.cncdn.cn/angular-ui-bootstrap/0.11.0/ui-bootstrap-tpls.min.js'
 			]
 		},
 		css: [
@@ -56,7 +52,8 @@ module.exports = {
 			'public/application.js',
 			'public/modules/*/*.js',
 			'public/modules/*/*[!tests]*/*.js',
-			'public/modules/core/services/*.js'
+			'public/modules/core/services/*.js',
+			'public/modules/core/services/GoogleAnalytics.js'
 		],
 		tests: [
 			'public/lib/angular-mocks/angular-mocks.js',

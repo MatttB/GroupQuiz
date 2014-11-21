@@ -13,7 +13,7 @@ var QuizSchema = new Schema({
 	name: {
 		type: String,
 		default: '',
-		required: 'Please fill Quiz name',
+		required: 'Please enter a Quiz name',
 		trim: true
 	},
 	created: {
@@ -23,6 +23,15 @@ var QuizSchema = new Schema({
 	user: {
 		type: Schema.ObjectId,
 		ref: 'User'
+	},
+	desc: {
+		type: String,
+		ref: 'desc'
+	},
+	questions: {
+		type: Array,
+		default: [],
+		required: 'Please enter questions'
 	}
 });
 
