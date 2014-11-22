@@ -1,30 +1,12 @@
 <section data-ng-controller="QuizzesController as quizzes" data-ng-init="findOne()">
     <div class="page-header">
-        <h1>Edit {{quiz.name}}</h1>
+        <h1>Edit {{quiz.name.substring(0,20)}}</h1>
     </div>
-    <ul class="nav nav-tabs">
-        <li role="presentation" class="active"><a href="#">Summary</a></li>
-        <li role="presentation"><a href="#Questions">Questions</a></li>
-        <li role="presentation"><a href="#">Quiz Settings</a></li>
-    </ul>
-    <div class="col-md-12">
-        <form class="form-horizontal" data-ng-submit="update()" novalidate>
-            <fieldset>
-                <div class="form-group">
-                    <label class="control-label" for="name">Quiz Name</label>
-                    <div class="controls">
-                        <input type="text" data-ng-model="quiz.name" id="name" class="form-control" placeholder="Name" required>
-                        <label class="control-label" for="name">Quiz Description</label>
-                        <input type="text" data-ng-model="quiz.desc" id="desc" class="form-control" placeholder="Description">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <input type="submit" value="Update" class="btn btn-default">
-                </div>
-				<div data-ng-show="error" class="text-danger">
-					<strong data-ng-bind="error"></strong>
-				</div>
-            </fieldset>
-        </form>
+
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <!-- tab content container -->
+            <quiz-tabs></quiz-tabs>
+        </div>
     </div>
 </section>

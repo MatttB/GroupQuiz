@@ -6,6 +6,26 @@
 var mongoose = require('mongoose'),
 	Schema = mongoose.Schema;
 
+/** == Validation Functions */
+
+/**
+ *validateName function
+ * @param name
+ * @returns {boolean}
+ */
+var validateName = function(name){
+	return name.length < 71 && name.length > 0;
+};
+
+/**
+ *
+ * @param desc
+ * @returns {boolean}
+ */
+var validateDesc = function(desc){
+	return desc.length < 141;
+};
+
 /**
  * Quiz Schema
  */
@@ -13,7 +33,8 @@ var QuizSchema = new Schema({
 	name: {
 		type: String,
 		default: '',
-		required: 'Please enter a Quiz name',
+		validate: [validateName, 'Quiz name must be between 1 and 70 characters'],
+		ref: 'name',
 		trim: true
 	},
 	created: {
@@ -26,12 +47,18 @@ var QuizSchema = new Schema({
 	},
 	desc: {
 		type: String,
-		ref: 'desc'
+		ref: 'desc',
+		default: '',
+		trim: true,
+		validate: [validateDesc, 'Description can not be more than 140 characters']
 	},
 	questions: {
 		type: Array,
-		default: [],
-		required: 'Please enter questions'
+		default: []
+	},
+	tags: {
+		type: Array,
+		default: []
 	}
 });
 
