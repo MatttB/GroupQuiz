@@ -10,13 +10,14 @@ var mongoose = require('mongoose'),
 
 var validateAnswer = function(answer){
 	if(answer.length === 0){
-		return 'Please enter an answer';
+		return false;
 	}
 	for(var i = 0; i < answer.length; i++){
 		if(answer[i].length > 35 || answer[i].length === 0){
-			return 'One or more answers are not between 1 and 35 characters';
+			return false;
 		}
 	}
+	return true;
 };
 
 /**
@@ -39,8 +40,7 @@ var QuestionSchema = new Schema({
 	answer: {
 		type: Array,
 		default: [],
-		validate: [validateAnswer,'']
-
+		validate: [validateAnswer,'One or more of the correct answers are not between 0 and 35 characters']
 	},
 	user: {
 		type: Schema.ObjectId,
