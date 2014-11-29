@@ -13,10 +13,14 @@ var mongoose = require('mongoose'),
  */
 exports.create = function(req, res) {
 	var quiz = new Quiz(req.body);
-	quiz.user = req.user;
-
+	var summary = req.body.summary;
+	summary.user = req.user;
+	summary.displayName = req.user.displayName;
+	quiz.summary = summary;
+	console.log(quiz);
 	quiz.save(function(err) {
 		if (err) {
+			console.log(res.status(400));
 			return res.status(400).send({
 				message: errorHandler.getErrorMessage(err)
 			});

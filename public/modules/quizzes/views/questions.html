@@ -1,3 +1,21 @@
 <div ng-show="tab.isSet(2)">
-    <h4>Questions content</h4>
+    <br>
+    <div class="col-md-12">
+        <form class="form-horizontal" data-ng-submit="appendQuestion()" novalidate>
+            <fieldset>
+                <div class="form-group">
+                    <div class="controls">
+                        <input type="text" data-ng-model="question.question" id="question" class="form-control" ng-maxlength="70" maxlength="70" placeholder="Quiz Name" ng-trim="true" required>
+                        <textarea class="form-control" rows="5" data-ng-model="question.hint" id="hint" ng-maxlength="140" maxlength="140" placeholder="Quiz description" ng-trim="true"></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Update" class="btn btn-primary">
+                </div>
+                <div data-ng-show="error" class="text-danger">
+                    <strong data-ng-bind="error"></strong>
+                </div>
+            </fieldset>
+        </form>
+    </div>
 </div>

@@ -2,18 +2,23 @@
 
 // Quizzes controller
 angular.module('quizzes').controller('QuizzesController', ['$scope', '$stateParams', '$location', 'Authentication', 'Quizzes',
-	function($scope, $stateParams, $location, Authentication, Quizzes ) {
+	function($scope, $stateParams, $location, Authentication, Quizzes, Questions ) {
 		$scope.authentication = Authentication;
 
 		// Create new Quiz
 		$scope.create = function() {
 			// Create new Quiz object
 			var quiz = new Quizzes ({
-				name: this.name,
-				desc: this.desc,
-				questions: this.questions
+				summary: {
+					name: this.name,
+					desc: this.desc
+				},
+				questions: [],
+				settings: {}
 			});
+/*
 
+*/
 			// Redirect after save
 			quiz.$save(function(response) {
 				$location.path('quizzes/' + response._id + '/edit');
@@ -41,12 +46,26 @@ angular.module('quizzes').controller('QuizzesController', ['$scope', '$statePara
 			}
 		};
 
+		$scope.appendQuestion = function(){
+			var question = new Questions({
+				question: this.question,
+				hint: this.hint,
+				answer: this.answer,
+				wrongAnswer: this.wrongAnswer
+			});
+			var quiz = $scope.quiz;
+			console.log(question);
+			quiz.questions.push(question);
+			console.log(quiz);
+
+		};
+
 		// Update existing Quiz
 		$scope.update = function() {
 			var quiz = $scope.quiz ;
 
 			quiz.$update(function() {
-				$location.path('quizzes/' + quiz._id);
+				$location.path('quizzes/' + quiz._id + '/edit');
 			}, function(errorResponse) {
 				$scope.error = errorResponse.data.message;
 			});
@@ -54,6 +73,7 @@ angular.module('quizzes').controller('QuizzesController', ['$scope', '$statePara
 
 		// Find a list of Quizzes
 		$scope.find = function() {
+			console.log(Quizzes.query());
 			$scope.quizzes = Quizzes.query();
 		};
 

@@ -11,3 +11,15 @@ angular.module('quizzes').factory('Quizzes', ['$resource',
 		});
 	}
 ]);
+
+function Quiz(){
+	this.summary = {};
+	this.questions = [];
+	this.settings = {};
+}
+
+angular.module('quizzes').factory('quizConstructor', [
+	function() {
+		return new Quiz();
+	}
+]);
