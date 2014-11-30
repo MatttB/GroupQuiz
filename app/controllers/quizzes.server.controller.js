@@ -17,6 +17,7 @@ exports.create = function(req, res) {
 	summary.user = req.user;
 	summary.displayName = req.user.displayName;
 	quiz.summary = summary;
+	quiz.questions = req.body.questions;
 	console.log(quiz);
 	quiz.save(function(err) {
 		if (err) {
@@ -102,7 +103,7 @@ exports.quizByID = function(req, res, next, id) { Quiz.findById(id).populate('us
  * Quiz authorization middleware
  */
 exports.hasAuthorization = function(req, res, next) {
-	if (req.quiz.user.id !== req.user.id) {
+	if (req.quiz.summary[0].user.toString() !== req.user._id.toString()) {
 		return res.status(403).send('User is not authorized');
 	}
 	next();

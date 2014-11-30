@@ -2,7 +2,7 @@
 
 // Quizzes controller
 angular.module('quizzes').controller('QuizzesController', ['$scope', '$stateParams', '$location', 'Authentication', 'Quizzes',
-	function($scope, $stateParams, $location, Authentication, Quizzes, Questions ) {
+	function($scope, $stateParams, $location, Authentication, Quizzes, Question ) {
 		$scope.authentication = Authentication;
 
 		// Create new Quiz
@@ -46,24 +46,10 @@ angular.module('quizzes').controller('QuizzesController', ['$scope', '$statePara
 			}
 		};
 
-		$scope.appendQuestion = function(){
-			var question = new Questions({
-				question: this.question,
-				hint: this.hint,
-				answer: this.answer,
-				wrongAnswer: this.wrongAnswer
-			});
-			var quiz = $scope.quiz;
-			console.log(question);
-			quiz.questions.push(question);
-			console.log(quiz);
-
-		};
-
 		// Update existing Quiz
 		$scope.update = function() {
 			var quiz = $scope.quiz ;
-
+			//console.log(quiz);
 			quiz.$update(function() {
 				$location.path('quizzes/' + quiz._id + '/edit');
 			}, function(errorResponse) {
@@ -83,5 +69,95 @@ angular.module('quizzes').controller('QuizzesController', ['$scope', '$statePara
 				quizId: $stateParams.quizId
 			});
 		};
+
+		/*
+			Questions page
+		 */
+
+		$scope.tempQuestion = {
+			'title': '',
+			'hint': '',
+			'answer': [],
+			'wrongAnswer': []
+		};
+
+		//$scope.appendQuestion = function() {
+			/*
+			 var question = new Question({
+			 title: this.title,
+			 hint: this.hint,
+			 answer: this.answer,
+			 wrongAnswer: this.wrongAnswer
+			 });
+			 */
+			//var quiz = $scope.quiz;
+			//quiz.questions.push($scope.tempQuestion);
+
+			//console.log('test');
+			//$scope.setNumPages();
+			//console.log(quiz.questions.length);
+		//};
+
+		$scope.updateQuestion = function() {
+			var quiz = $scope.quiz;
+			console.log($scope.currentPage);
+			if($scope.currentPage > $scope.numPages){
+				$scope.error = 'You have questions left unfilled between questions ' + $scope.numPages + ' and ' + $scope.currentPage;
+			}
+			else{
+				$scope.error = false;
+			}
+			/*
+			quiz.questions[$scope.currentPage-1] = {
+				title: this.title,
+				hint: 'sadasdasd',
+				answer: this.answer,
+				wrongAnswers: this.wrongAnswers
+			};*/
+			if ($scope.currentPage === $scope.numPages) {
+				quiz.questions.push({
+					title: '',
+					hint: '',
+					answer: [],
+					wrongAnswers: []
+				});
+				$scope.numPages = quiz.questions.length;
+			}
+			else {
+				//console.log('test');
+				console.log($scope.numPages);
+				console.log($scope.currentPage);
+
+				//console.log(quiz.questions.length);
+			}
+			$scope.currentPage = $scope.currentPage + 1;
+			quiz.$update(function () {
+				$location.path('quizzes/' + quiz._id + '/edit');
+			}, function (errorResponse) {
+				$scope.error = errorResponse.data.message;
+			});
+		};
+
+		$scope.formatNumber = function(){
+			if( ($scope.currentPage > $scope.quiz.questions.length) || ($scope.currentPage < 1) ) {
+				$scope.currentPage = $scope.quiz.questions.length;
+			}
+		};
+
+		//$scope.setNumPages();
+		//$scope.numPages = $scope.FindNumPages();
+		//$scope.SetNumPages();
+		/*
+		$scope.$watch('$scope.quiz.questions.length', function(){
+				$scope.SetNumPages();
+			}
+		);
+		*/
+		//$scope.numPages = $scope.quiz.questions.length;
+		//$scope.numPages = $scope.quiz.questions.length;
+		$scope.numPages = 1;
+		$scope.currentPage = 1;
+		$scope.maxSize = 10;
+
 	}
 ]);

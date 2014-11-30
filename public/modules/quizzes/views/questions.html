@@ -1,21 +1,23 @@
 <div ng-show="tab.isSet(2)">
-    <br>
+    <pre>Question {{currentPage}} / {{numPages}}</pre>
     <div class="col-md-12">
-        <form class="form-horizontal" data-ng-submit="appendQuestion()" novalidate>
-            <fieldset>
-                <div class="form-group">
-                    <div class="controls">
-                        <input type="text" data-ng-model="question.question" id="question" class="form-control" ng-maxlength="70" maxlength="70" placeholder="Quiz Name" ng-trim="true" required>
-                        <textarea class="form-control" rows="5" data-ng-model="question.hint" id="hint" ng-maxlength="140" maxlength="140" placeholder="Quiz description" ng-trim="true"></textarea>
+            <form class="form-horizontal" data-ng-submit="updateQuestion()" novalidate>
+                <fieldset>
+                    <div class="form-group">
+                        <div class="controls">
+                            <input type="text" data-ng-model="quiz.questions[currentPage-1].title" id="question" class="form-control" ng-maxlength="70" maxlength="70" placeholder="Question title" ng-trim="true" required>
+                            <textarea class="form-control" rows="5" data-ng-model="quiz.questions[currentPage-1].hint" id="hint" ng-maxlength="140" maxlength="140" placeholder="Question hint" ng-trim="true"></textarea>
+                        </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <input type="submit" value="Update" class="btn btn-primary">
-                </div>
-                <div data-ng-show="error" class="text-danger">
-                    <strong data-ng-bind="error"></strong>
-                </div>
-            </fieldset>
-        </form>
+                        <div class="form-group">
+                            <input type="submit" value="Update" class="btn btn-primary">
+                        </div>
+                    <input type="number" data-ng-model="currentPage" id="page" class="form-control" placeholder="1">
+                    <div data-ng-show="error" class="text-danger">
+                        <strong data-ng-bind="error"></strong>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
     </div>
 </div>
