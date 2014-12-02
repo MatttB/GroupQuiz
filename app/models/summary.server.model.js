@@ -9,14 +9,13 @@ var mongoose = require('mongoose'),
 /**
  * Validation Functions
  */
-
 /**
  *validateName function
  * @param name
  * @returns {boolean}
  */
 var validateName = function(name){
-	return name.length < 71 && name.length > 0;
+	return( (name.length > 0) && (name.length < 71) );
 };
 
 /**

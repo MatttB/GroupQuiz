@@ -1,17 +1,34 @@
 <div ng-show="tab.isSet(2)">
-    <pre>Question {{currentPage}} / {{numPages}}</pre>
     <div class="col-md-12">
-            <form class="form-horizontal" data-ng-submit="updateQuestion()" novalidate>
+            <form class="form-horizontal" data-ng-submit="updateQuestion(1)" novalidate>
+                <pre>Question {{currentPage}} / {{numPages}}    <input type="submit" value="Update" class="btn btn-primary"></pre>
                 <fieldset>
                     <div class="form-group">
                         <div class="controls">
                             <input type="text" data-ng-model="quiz.questions[currentPage-1].title" id="question" class="form-control" ng-maxlength="70" maxlength="70" placeholder="Question title" ng-trim="true" required>
-                            <textarea class="form-control" rows="5" data-ng-model="quiz.questions[currentPage-1].hint" id="hint" ng-maxlength="140" maxlength="140" placeholder="Question hint" ng-trim="true"></textarea>
+                            <input type="text" class="form-control" data-ng-model="quiz.questions[currentPage-1].hint" id="hint" ng-maxlength="140" maxlength="140" placeholder="Question hint" ng-trim="true">
+                            <br>
+
+
+                            <pre>Accepted Answers <input type="button" value="Add answer" class="btn btn-primary" ng-click="addAnswer()"><input type="button" value="Remove answer" class="btn btn-primary" ng-click="delAnswer()"></pre>
+                            <!--
+                            <input type="text ng-repeat="answer in quiz.questions[currentPage-1].answer track by $index" ng-model='quiz.questions[currentPage-1].answer[$index]' placeholder='Answer:'>
+                            -->
+                            <div ng-repeat="answer in quiz.questions[currentPage-1].answer track by $index">
+                                <input type="text" data-ng-model="quiz.questions[currentPage-1].answer[$index]" ng-maxlength="140" maxlength="140" placeholder="Answer" ng-trim="true">
+                            </div>
+
+
+                            <pre>Incorrect Answers for Multiple Choice <input type="button" value="Add answer" class="btn btn-primary" ng-click="addWrongAnswer()"><input type="button" value="Remove answer" class="btn btn-primary" ng-click="delWrongAnswer()"></pre>
+                            <!--
+                            <input type="text ng-repeat="answer in quiz.questions[currentPage-1].answer track by $index" ng-model='quiz.questions[currentPage-1].answer[$index]' placeholder='Answer:'>
+                            -->
+                            <div ng-repeat="answer in quiz.questions[currentPage-1].wrongAnswers track by $index">
+                                <input type="text" data-ng-model="quiz.questions[currentPage-1].wrongAnswers[$index]" ng-maxlength="140" maxlength="140" placeholder="Wrong Answer" ng-trim="true">
+                            </div>
+
                         </div>
                     </div>
-                        <div class="form-group">
-                            <input type="submit" value="Update" class="btn btn-primary">
-                        </div>
                     <input type="number" data-ng-model="currentPage" id="page" class="form-control" placeholder="1">
                     <div data-ng-show="error" class="text-danger">
                         <strong data-ng-bind="error"></strong>

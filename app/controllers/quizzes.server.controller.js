@@ -17,11 +17,16 @@ exports.create = function(req, res) {
 	summary.user = req.user;
 	summary.displayName = req.user.displayName;
 	quiz.summary = summary;
-	quiz.questions = req.body.questions;
-	console.log(quiz);
+	quiz.questions = [{
+		title: '',
+		hint: '',
+		answer: [''],
+		wrongAnswers: [],
+		insert: true
+	}];
+
 	quiz.save(function(err) {
 		if (err) {
-			console.log(res.status(400));
 			return res.status(400).send({
 				message: errorHandler.getErrorMessage(err)
 			});
@@ -41,10 +46,11 @@ exports.read = function(req, res) {
 /**
  * Update a Quiz
  */
-exports.update = function(req, res) {
-	var quiz = req.quiz ;
 
+exports.update = function(req, res) {
+	var quiz = req.quiz;
 	quiz = _.extend(quiz , req.body);
+	quiz.questions[0].insert = false;
 
 	quiz.save(function(err) {
 		if (err) {
@@ -52,6 +58,7 @@ exports.update = function(req, res) {
 				message: errorHandler.getErrorMessage(err)
 			});
 		} else {
+			delete quiz.questions[0].insert;
 			res.jsonp(quiz);
 		}
 	});

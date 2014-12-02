@@ -13,7 +13,12 @@ angular.module('quizzes').controller('QuizzesController', ['$scope', '$statePara
 					name: this.name,
 					desc: this.desc
 				},
-				questions: [],
+				questions: [{
+					'title': '',
+					'hint': '',
+					'answer': [],
+					'wrongAnswers': []
+				}],
 				settings: {}
 			});
 /*
@@ -59,7 +64,6 @@ angular.module('quizzes').controller('QuizzesController', ['$scope', '$statePara
 
 		// Find a list of Quizzes
 		$scope.find = function() {
-			console.log(Quizzes.query());
 			$scope.quizzes = Quizzes.query();
 		};
 
@@ -78,7 +82,7 @@ angular.module('quizzes').controller('QuizzesController', ['$scope', '$statePara
 			'title': '',
 			'hint': '',
 			'answer': [],
-			'wrongAnswer': []
+			'wrongAnswers': []
 		};
 
 		//$scope.appendQuestion = function() {
@@ -98,22 +102,83 @@ angular.module('quizzes').controller('QuizzesController', ['$scope', '$statePara
 			//console.log(quiz.questions.length);
 		//};
 
+		$scope.addAnswer = function(){
+			var quiz = $scope.quiz;
+			quiz.questions[$scope.currentPage-1].answer.push('');
+		};
+
+		$scope.delAnswer = function(){
+			var quiz = $scope.quiz;
+			quiz.questions[$scope.currentPage-1].answer.pop();
+		};
+
+		$scope.addWrongAnswer = function(){
+			var quiz = $scope.quiz;
+			quiz.questions[$scope.currentPage-1].wrongAnswers.push('');
+		};
+
+		$scope.delWrongAnswer = function(){
+			var quiz = $scope.quiz;
+			quiz.questions[$scope.currentPage-1].wrongAnswers.pop();
+		};
+
 		$scope.updateQuestion = function() {
 			var quiz = $scope.quiz;
-			console.log($scope.currentPage);
+			console.log(quiz);
+			/*
 			if($scope.currentPage > $scope.numPages){
 				$scope.error = 'You have questions left unfilled between questions ' + $scope.numPages + ' and ' + $scope.currentPage;
 			}
 			else{
 				$scope.error = false;
 			}
+			*/
 			/*
-			quiz.questions[$scope.currentPage-1] = {
+			var addQuestion = function(){quiz.questions[$scope.currentPage-1] = {
 				title: this.title,
 				hint: 'sadasdasd',
 				answer: this.answer,
 				wrongAnswers: this.wrongAnswers
 			};*/
+			/*
+			else {
+				//console.log('test');
+				console.log($scope.numPages);
+				console.log($scope.currentPage);
+
+				//console.log(quiz.questions.length);
+			}
+			*/
+			var pushQuestion = function(){
+				quiz.questions.push({
+					'title': '',
+					'hint': '',
+					'answer': [''],
+					'wrongAnswers': []
+				});
+			};
+
+			var popQuestion = function(){
+				quiz.questions.pop();
+			};
+
+			quiz.$update(function () {
+				$location.path('quizzes/' + quiz._id + '/edit');
+				pushQuestion();
+				$scope.error = undefined;
+				$scope.currentPage = $scope.currentPage + 1;
+				$scope.numPages = $scope.numPages + 1;
+			},function(errorResponse) {
+					console.log(errorResponse);
+					//popQuestion();
+					$scope.error = errorResponse.data.message;
+				}
+			);
+		};
+		/*
+		console.log('@');
+		console.log($scope.error);
+		if(!$scope.error){
 			if ($scope.currentPage === $scope.numPages) {
 				quiz.questions.push({
 					title: '',
@@ -122,22 +187,11 @@ angular.module('quizzes').controller('QuizzesController', ['$scope', '$statePara
 					wrongAnswers: []
 				});
 				$scope.numPages = quiz.questions.length;
-			}
-			else {
-				//console.log('test');
-				console.log($scope.numPages);
-				console.log($scope.currentPage);
-
-				//console.log(quiz.questions.length);
+				$scope.currentPage = $scope.currentPage + n;
 			}
 			$scope.currentPage = $scope.currentPage + 1;
-			quiz.$update(function () {
-				$location.path('quizzes/' + quiz._id + '/edit');
-			}, function (errorResponse) {
-				$scope.error = errorResponse.data.message;
-			});
-		};
-
+		}
+*/
 		$scope.formatNumber = function(){
 			if( ($scope.currentPage > $scope.quiz.questions.length) || ($scope.currentPage < 1) ) {
 				$scope.currentPage = $scope.quiz.questions.length;
