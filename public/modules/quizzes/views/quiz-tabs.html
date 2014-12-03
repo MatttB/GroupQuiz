@@ -1,23 +1,25 @@
 <!-- Tabs Go Here -->
 <section>
-    <ul class="nav nav-pills">
-        <li ng-class="{ active:tab.isSet(1) }">
-            <a href ng-click="tab.setTab(1)">Summary</a>
-        </li>
-        <li ng-class="{ active:tab.isSet(2) }">
-            <a href ng-click="tab.setTab(2)">Questions</a>
-        </li>
-        <li ng-class="{ active:tab.isSet(3) }">
-            <a href ng-click="tab.setTab(3)">Settings</a>
-        </li>
-    </ul>
+    <div class="panel-heading">
+        <ul class="nav nav-pills">
+            <li class="max-width-tab" ng-class="{ active:tab.isSet(1) }">
+                <a href ng-click="tab.setTab(1)">Summary</a>
+            </li>
+            <li class="max-width-tab" ng-class="{ active:tab.isSet(2) }" ng-click="updateNumPages()">
+                <a href ng-click="tab.setTab(2)">Questions</a>
+            </li>
+            <li class="max-width-tab" ng-class="{ active:tab.isSet(3) }">
+                <a href ng-click="tab.setTab(3)">Settings</a>
+            </li>
+        </ul>
+    </div>
+    <div class="panel-body">
+        <!--  Summary Tab's Content  -->
+        <summary role="presentation" ng-show="tab.isSet(1)"></summary>
+        <!--  Questions Tab's Content  -->
+        <questions ng-show="tab.isSet(2)"></questions>
 
-    <!--  Summary Tab's Content  -->
-    <summary role="presentation" ng-show="tab.isSet(1)"></summary>
-    <!--  Questions Tab's Content  -->
-    <questions ng-show="tab.isSet(2)"></questions>
-
-    <!--  Settings Tab's Content  -->
-    <settings ng-show="tab.isSet(3)"></settings>
-
+        <!--  Settings Tab's Content  -->
+        <settings ng-show="tab.isSet(3)"></settings>
+    </div>
 </section>

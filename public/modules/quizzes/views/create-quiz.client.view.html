@@ -4,13 +4,14 @@
     </div>
 
     <div class="panel panel-default">
-        <div class="panel-body">
+        <div class="panel-heading">
             <ul class="nav nav-pills">
-                <li role="presentation" class="active"><a href="#">Summary</a></li>
-                <li role="presentation" class="disabled"><a href="#">Questions</a></li>
-                <li role="presentation" class="disabled"><a href="#">Settings</a></li>
+                <li role="presentation" class="max-width-tab" ng-class="{ active:true }"><a href="#">Summary</a></li>
+                <li role="presentation" class="disabled" ng-class="{ active:false }"><a href="">Questions</a></li>
+                <li role="presentation" class="disabled" ng-class="{ active:false }"><a href="">Settings</a></li>
             </ul>
-            <br>
+        </div>
+        <div class="panel-body">
             <div class="col-md-12">
                 <form class="form-horizontal" data-ng-submit="create()" novalidate>
                     <fieldset>
@@ -23,7 +24,7 @@
                         <div class="form-group">
                             <input type="submit" class="btn btn-primary">
                         </div>
-                        <div data-ng-show="error" class="text-danger">
+                        <div data-ng-show="error" class="alert alert-danger" role="alert">
                             <strong data-ng-bind="error"></strong>
                         </div>
                     </fieldset>

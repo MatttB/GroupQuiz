@@ -14,7 +14,9 @@ module.exports = {
 		lib: {
 			css: [
 				'public/lib/bootstrap/dist/css/bootstrap.css',
-				'public/lib/bootstrap/dist/css/bootstrap-theme.css'/*
+				'public/lib/bootstrap/dist/css/bootstrap-theme.css',
+				'public/modules/quizzes/css/main.css',
+				'http://fonts.googleapis.com/css?family=Roboto'/*
 				'https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css',
 				'https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css'*/
 			],

@@ -125,30 +125,7 @@ angular.module('quizzes').controller('QuizzesController', ['$scope', '$statePara
 		$scope.updateQuestion = function() {
 			var quiz = $scope.quiz;
 			console.log(quiz);
-			/*
-			if($scope.currentPage > $scope.numPages){
-				$scope.error = 'You have questions left unfilled between questions ' + $scope.numPages + ' and ' + $scope.currentPage;
-			}
-			else{
-				$scope.error = false;
-			}
-			*/
-			/*
-			var addQuestion = function(){quiz.questions[$scope.currentPage-1] = {
-				title: this.title,
-				hint: 'sadasdasd',
-				answer: this.answer,
-				wrongAnswers: this.wrongAnswers
-			};*/
-			/*
-			else {
-				//console.log('test');
-				console.log($scope.numPages);
-				console.log($scope.currentPage);
 
-				//console.log(quiz.questions.length);
-			}
-			*/
 			var pushQuestion = function(){
 				quiz.questions.push({
 					'title': '',
@@ -168,13 +145,56 @@ angular.module('quizzes').controller('QuizzesController', ['$scope', '$statePara
 				$scope.error = undefined;
 				$scope.currentPage = $scope.currentPage + 1;
 				$scope.numPages = $scope.numPages + 1;
+				$scope.showDelAndPrev = true;
 			},function(errorResponse) {
 					console.log(errorResponse);
+					if($scope.quiz.questions.length === 1){
+						$scope.showDelAndPrev = false;
+					}
 					//popQuestion();
 					$scope.error = errorResponse.data.message;
 				}
 			);
 		};
+
+		$scope.showDelAndPrev = false;
+
+		$scope.delQuestion = function(){
+			if($scope.currentPage === $scope.quiz.questions.length){
+				$scope.currentPage --;
+			}
+			$scope.quiz.questions.splice($scope.currentPage - 1, 1);
+			$scope.numPages --;
+			//current page button visibility clean-up
+			if($scope.quiz.questions.length === $scope.currentPage){
+				$scope.showAdd = true;
+				if($scope.currentPage === 1){
+					$scope.showDelAndPrev = false;
+				}
+				else{
+					$scope.showDelAndPrev = true;
+				}
+			}
+			else{
+				$scope.showAdd = false;
+			}
+		};
+
+		$scope.nextQuestion = function() {
+			console.log('next clicked');
+			if ($scope.currentPage === $scope.quiz.questions.length) {
+				$scope.updateQuestion();
+			}
+			else {
+				$scope.currentPage++;
+				$scope.showDelAndPrev = true;
+			}
+		};
+
+		$scope.prevQuestion = function(){
+			$scope.currentPage --;
+		};
+
 		/*
 		console.log('@');
 		console.log($scope.error);
@@ -196,6 +216,10 @@ angular.module('quizzes').controller('QuizzesController', ['$scope', '$statePara
 			if( ($scope.currentPage > $scope.quiz.questions.length) || ($scope.currentPage < 1) ) {
 				$scope.currentPage = $scope.quiz.questions.length;
 			}
+		};
+
+		$scope.updateNumPages = function() {
+			$scope.numPages = $scope.quiz.questions.length;
 		};
 
 		//$scope.setNumPages();
