@@ -6,7 +6,7 @@
                 <a href ng-click="tab.setTab(1)">Summary</a>
             </li>
             <li class="max-width-tab" ng-class="{ active:tab.isSet(2) }" ng-click="updateNumPages()">
-                <a href ng-click="tab.setTab(2)">Questions</a>
+                <a href ng-click="tab.setTab(2)">Q<tab2hide ng-hide="tab.isSet(2)">uestions</tab2hide><qnumbers ng-show="tab.isSet(2)"> {{currentPage}}/{{numPages}}</qnumbers></a>
             </li>
             <li class="max-width-tab" ng-class="{ active:tab.isSet(3) }">
                 <a href ng-click="tab.setTab(3)">Settings</a>

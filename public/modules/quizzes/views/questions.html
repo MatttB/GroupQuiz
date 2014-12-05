@@ -1,15 +1,13 @@
 <div ng-show="tab.isSet(2)">
-    <div class="col-md-12">
+
         <form class="form-horizontal" data-ng-submit="updateQuestion(1)" novalidate>
-        <div class="panel panel-default">
+
             <div class="panel-heading">
                 <div class="row">
-                    <div class="col-xs-2"><input type="button" ng-show="showDelAndPrev" ng-click="prevQuestion()" value="Previous" class="btn btn-primary btn-block"></div>
-                    <div class="col-xs-2"><input type="button" ng-show="showDelAndPrev" ng-click="delQuestion()" value="Delete" class="btn btn-primary btn-block"></div>
-                    <div class="col-xs-4">Question {{currentPage}} / {{numPages}}</div>
+                    <div class="col-xs-4"><input type="button" ng-show="currentPage != 1" ng-click="prevQuestion()" value="Previous" class="btn btn-primary btn-block"></div>
+                    <div class="col-xs-4"><input type="button" ng-show="numPages != 1" ng-click="delQuestion()" value="Delete" class="btn btn-primary btn-block"></div>
                     <div class="col-xs-4"><input type="button" ng-click="nextQuestion()" value="Next" class="btn btn-primary btn-block"></div>
                 </div>
-
             </div>
             <div class="panel-body">
                 <div class="col-md-12">
@@ -17,7 +15,7 @@
                         <div class="form-group">
 
                             <div class="controls">
-
+                                <br>
                                 <input type="text" data-ng-model="quiz.questions[currentPage-1].title" id="question" class="form-control" ng-maxlength="70" maxlength="70" placeholder="Question title" ng-trim="true" required>
                                 <input type="text" class="form-control" data-ng-model="quiz.questions[currentPage-1].hint" id="hint" ng-maxlength="140" maxlength="140" placeholder="Question hint" ng-trim="true">
 
@@ -27,7 +25,7 @@
                                 <div class="panel panel-default">
                                     <div class="panel panel-heading">
                                         <div class="row">
-                                            <div class="col-xs-4"><input type="button" value="Delete" class="btn btn-primary btn-block" ng-click="delAnswer()"></div>
+                                            <div class="col-xs-4"><input type="button" value="Delete" ng-show="quiz.questions[currentPage-1].answer.length != 1" class="btn btn-primary btn-block" ng-click="delAnswer()"></div>
                                             <div class="col-xs-4"><h5>Accepted Answers</h5></div>
                                             <div class="col-xs-4"><input type="button" value="Add" class="btn btn-primary btn-block" ng-click="addAnswer()"></div>
                                         </div>
@@ -44,7 +42,7 @@
                                 <div class="panel panel-default">
                                     <div class="panel panel-heading">
                                         <div class="row">
-                                            <div class="col-xs-4"><input type="button" value="Delete" class="btn btn-primary btn-block" ng-click="delWrongAnswer()"></div>
+                                            <div class="col-xs-4"><input type="button" value="Delete" ng-show="quiz.questions[currentPage-1].wrongAnswers.length != 0" class="btn btn-primary btn-block" ng-click="delWrongAnswer()"></div>
                                             <div class="col-xs-4"><h5>Incorrect Answers</h5></div>
                                             <div class="col-xs-4"><input type="button" value="Add" class="btn btn-primary btn-block" ng-click="addWrongAnswer()"></div>
                                         </div>
@@ -62,10 +60,9 @@
                     </fieldset>
                 </div>
             </div>
-        </div>
         </form>
         <!-- Form for hacking moving to what page for dev testing...
         <input type="number" data-ng-model="currentPage" id="page" class="form-control" placeholder="1">
         -->
-    </div>
+
 </div>
