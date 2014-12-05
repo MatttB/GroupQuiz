@@ -20,7 +20,9 @@ angular.module('quizzes').controller('QuizzesController', ['$scope', '$statePara
 				}],
 				settings: {}
 			});
+/*
 
+*/
 			// Redirect after save
 			quiz.$save(function(response) {
 				$location.path('quizzes/' + response._id + '/edit');
@@ -64,6 +66,13 @@ angular.module('quizzes').controller('QuizzesController', ['$scope', '$statePara
 			Questions page
 		 */
 
+		$scope.tempQuestion = {
+			'title': '',
+			'hint': '',
+			'answer': [],
+			'wrongAnswers': []
+		};
+
 		$scope.addAnswer = function(){
 			var quiz = $scope.quiz;
 			quiz.questions[$scope.currentPage-1].answer.push('');
@@ -84,11 +93,11 @@ angular.module('quizzes').controller('QuizzesController', ['$scope', '$statePara
 			quiz.questions[$scope.currentPage-1].wrongAnswers.pop();
 		};
 
-
 		// Update existing Quiz
 		$scope.update = function() {
 			var quiz = $scope.quiz;
 
+			console.log('updating quiz...');
 			quiz.$update(function () {
 				$location.path('quizzes/' + quiz._id + '/edit');
 				$scope.error = undefined;
@@ -99,6 +108,7 @@ angular.module('quizzes').controller('QuizzesController', ['$scope', '$statePara
 
 		$scope.updateQuestion = function() {
 			var quiz = $scope.quiz;
+			console.log(quiz);
 
 			var pushQuestion = function(){
 				quiz.questions.push({
@@ -117,6 +127,7 @@ angular.module('quizzes').controller('QuizzesController', ['$scope', '$statePara
 				$scope.numPages++;
 			},function(errorResponse) {
 					console.log(errorResponse);
+					//popQuestion();
 					$scope.error = errorResponse.data.message;
 				}
 			);
@@ -150,9 +161,13 @@ angular.module('quizzes').controller('QuizzesController', ['$scope', '$statePara
 			$scope.update();
 		};
 
+		$scope.updateNumPages = function() {
+			$scope.numPages = $scope.quiz.questions.length;
+		};
+
+
 		$scope.numPages = 1;
 		$scope.currentPage = 1;
-		$scope.maxSize = 10;
 
 	}
 ]);
