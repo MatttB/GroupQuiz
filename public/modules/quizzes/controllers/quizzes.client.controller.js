@@ -93,6 +93,16 @@ angular.module('quizzes').controller('QuizzesController', ['$scope', '$statePara
 			quiz.questions[$scope.currentPage-1].wrongAnswers.pop();
 		};
 
+		$scope.delAnswerByIndex = function(index) {
+			if ($scope.quiz.questions[$scope.currentPage -1].answer.length !== 1){
+				$scope.quiz.questions[$scope.currentPage - 1].answer.splice(index, 1);
+			}
+		};
+
+		$scope.delWrongAnswerByIndex = function(index){
+			$scope.quiz.questions[$scope.currentPage-1].wrongAnswers.splice(index,1);
+		};
+
 		// Update existing Quiz
 		$scope.update = function() {
 			var quiz = $scope.quiz;

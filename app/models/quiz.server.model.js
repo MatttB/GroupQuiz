@@ -45,7 +45,7 @@ var validateQuestions = function(questions){
 					console.log('wrong ansewr falsy');
 					return true;////wrongAnswer was falsy
 				}
-				else if(question.answer[w].length < 1 || question.answer[w].length > 70){
+				else if(question.wrongAnswers[w].length < 1 || question.wrongAnswers[w].length > 70){
 					console.log('individual answer length err');
 					return true;//wrongAnswer not between 1 and 70 chars
 				}

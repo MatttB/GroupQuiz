@@ -24,15 +24,21 @@
                                 <!-- Accepted Answers -->
                                 <div class="panel panel-default">
                                     <div class="panel panel-heading">
-                                        <div class="row">
-                                            <div class="col-xs-4"><input type="button" value="Delete" ng-show="quiz.questions[currentPage-1].answer.length != 1" class="btn btn-primary btn-block" ng-click="delAnswer()"></div>
-                                            <div class="col-xs-4"><h5>Accepted Answers</h5></div>
-                                            <div class="col-xs-4"><input type="button" value="Add" class="btn btn-primary btn-block" ng-click="addAnswer()"></div>
+                                        <div class="input-group">
+                                            <h5>Correct Answers</h5>
+                                            <span class="input-group-btn">
+                                                <button ng-click="addAnswer()" type="button" class="btn btn-primary btn-block"><span class="glyphicon glyphicon-plus"></span></button>
+                                            </span>
                                         </div>
                                     </div>
                                     <div class="panel panel-body">
                                         <div ng-repeat="answer in quiz.questions[currentPage-1].answer track by $index">
-                                            <input type="text" class="form-control" data-ng-model="quiz.questions[currentPage-1].answer[$index]" ng-maxlength="140" maxlength="140" placeholder="Answer" ng-trim="true" required>
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" data-ng-model="quiz.questions[currentPage-1].answer[$index]" ng-maxlength="70" maxlength="70" ng-trim="true" required>
+                                                <span class="input-group-btn">
+                                                    <button ng-click="delAnswerByIndex($index)" class="btn btn-danger" type="button"><span class="glyphicon glyphicon-remove"></span></button>
+                                                </span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -41,15 +47,21 @@
                                 <!-- Wrong Answers -->
                                 <div class="panel panel-default">
                                     <div class="panel panel-heading">
-                                        <div class="row">
-                                            <div class="col-xs-4"><input type="button" value="Delete" ng-show="quiz.questions[currentPage-1].wrongAnswers.length != 0" class="btn btn-primary btn-block" ng-click="delWrongAnswer()"></div>
-                                            <div class="col-xs-4"><h5>Incorrect Answers</h5></div>
-                                            <div class="col-xs-4"><input type="button" value="Add" class="btn btn-primary btn-block" ng-click="addWrongAnswer()"></div>
+                                        <div class="input-group">
+                                            <h5>Incorrect Answers</h5>
+                                            <span class="input-group-btn">
+                                                <button ng-click="addWrongAnswer()" type="button" class="btn btn-primary btn-block"><span class="glyphicon glyphicon-plus"></span></button>
+                                            </span>
                                         </div>
                                     </div>
                                     <div class="panel panel-body">
                                         <div ng-repeat="answer in quiz.questions[currentPage-1].wrongAnswers track by $index">
-                                            <input type="text" class="form-control" data-ng-model="quiz.questions[currentPage-1].wrongAnswers[$index]" ng-maxlength="140" maxlength="140" placeholder="Wrong Answer" ng-trim="true">
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" data-ng-model="quiz.questions[currentPage-1].wrongAnswers[$index]" ng-maxlength="70" maxlength="70" ng-trim="true" required>
+                                                <span class="input-group-btn">
+                                                    <button ng-click="delWrongAnswerByIndex($index)" class="btn btn-danger" type="button"><span class="glyphicon glyphicon-remove"></span></button>
+                                                </span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -61,8 +73,4 @@
                 </div>
             </div>
         </form>
-        <!-- Form for hacking moving to what page for dev testing...
-        <input type="number" data-ng-model="currentPage" id="page" class="form-control" placeholder="1">
-        -->
-
 </div>
