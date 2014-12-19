@@ -21,3 +21,7 @@ body{
 .max-width-tab{
     width:32%;
 }
+
+.nav, .pagination, .carousel, .panel-title a {
+    cursor: pointer;
+}

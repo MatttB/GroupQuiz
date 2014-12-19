@@ -29,8 +29,7 @@ module.exports = {
 				'public/lib/angular-sanitize/angular-sanitize.js', 
 				'public/lib/angular-ui-router/release/angular-ui-router.js',
 				'public/lib/angular-ui-utils/ui-utils.js',
-				'public/lib/angular-bootstrap/ui-bootstrap-tpls.js'
-				/*
+				'public/lib/angular-bootstrap/ui-bootstrap-tpls.js'/*,
 				'http://ajax.googleapis.com/ajax/libs/angularjs/1.2.20/angular.min.js',
 				'http://ajax.googleapis.com/ajax/libs/angularjs/1.2.20/angular-resource.min.js',
 				'http://ajax.googleapis.com/ajax/libs/angularjs/1.2.20/angular-cookies.min.js',

@@ -13,6 +13,7 @@ var mongoose = require('mongoose'),
  */
 exports.create = function(req, res) {
 	var quiz = new Quiz(req.body);
+	console.log(req.body.summary);
 	var summary = req.body.summary;
 	summary.user = req.user;
 	summary.displayName = req.user.displayName;

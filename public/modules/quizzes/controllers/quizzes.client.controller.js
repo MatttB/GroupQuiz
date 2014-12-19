@@ -104,20 +104,71 @@ angular.module('quizzes').controller('QuizzesController', ['$scope', '$statePara
 		};
 
 		// Update existing Quiz
+		var quizComparator = [];
 		$scope.update = function() {
 			var quiz = $scope.quiz;
+			var change;
 
-			console.log('updating quiz...');
-			quiz.$update(function () {
-				$location.path('quizzes/' + quiz._id + '/edit');
-				$scope.error = undefined;
-			}, function (errorResponse) {
-				$scope.error = errorResponse.data.message;
-			});
+			var checkChange = function(older, newer){
+				if($scope.error){
+					change = true;
+					return;
+				}
+				var changed = function(qnum){
+					$scope.error = 'Question ' + qnum + ' changed.';
+					change = true;
+				};
+				if(older.length === 0){
+					change = true;
+					return;
+				}
+				console.log(older);
+				for(var i = 0; i < older.length; i++){//for each in older
+					if( (older[i].title !== newer[i].title) || (older[i].hint !== newer[i].hint) ){
+						changed(i+1);
+						return;
+					}
+					else{//check answers
+						if( (older[i].answer.length !== newer[i].answer.length) || (older[i].wrongAnswers.length !== newer[i].wrongAnswers.length) ){
+							changed(i+1);
+							return;
+						}
+						for(var a = 0; a < older[i].answer.length; a++){
+							if(older[i].answer[a] !== newer[i].answer[a]){
+								changed(i+1);
+								return;
+							}
+						}
+						for(var w = 0; w < older[i].wrongAnswers.length; w++){
+							if(older[i].wrongAnswers[w] !== newer[i].wrongAnswers[w]){
+								changed(i+1);
+								return;
+							}
+						}
+					}
+				}
+				change = false;
+			};
+			checkChange(quizComparator, quiz.questions);
+			if(change) {//check if quiz has changed
+				//console.log(JSON.parse(JSON.stringify(quiz)));
+				//quizComparator = (JSON.parse(JSON.stringify(quiz)));//makes a copy of the quiz for checking if quiz has changed later
+				quizComparator = quiz.questions;
+				console.log('updating quiz...');
+				quiz.$update(function () {
+					$location.path('quizzes/' + quiz._id + '/edit');
+					console.log(quizComparator);
+					$scope.error = undefined;
+				}, function (errorResponse) {
+					console.log(quiz.questions);
+					$scope.error = errorResponse.data.message;
+				});
+			}
 		};
 
 		$scope.updateQuestion = function() {
 			var quiz = $scope.quiz;
+
 			console.log(quiz);
 
 			var pushQuestion = function(){
@@ -130,6 +181,7 @@ angular.module('quizzes').controller('QuizzesController', ['$scope', '$statePara
 			};
 
 			quiz.$update(function () {
+
 				$location.path('quizzes/' + quiz._id + '/edit');
 				pushQuestion();
 				$scope.error = undefined;
@@ -175,9 +227,12 @@ angular.module('quizzes').controller('QuizzesController', ['$scope', '$statePara
 			$scope.numPages = $scope.quiz.questions.length;
 		};
 
+		$scope.setPage = function (pageNo) {
+			$scope.currentPage = pageNo;
+		};
 
-		$scope.numPages = 1;
 		$scope.currentPage = 1;
+
 
 	}
 ]);

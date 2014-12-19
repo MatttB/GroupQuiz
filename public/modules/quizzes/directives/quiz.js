@@ -1,7 +1,7 @@
 'use strict';
 
 (function(){
-    var app = angular.module('quiz-directives', []);
+    var app = angular.module('quiz-directives', ['ui.bootstrap']);
 
     app.directive('summary', function() {
         return {
@@ -21,6 +21,13 @@
         return {
             restrict: 'E',
             templateUrl: '/modules/quizzes/views/questions.html'
+        };
+    });
+
+    app.directive('question', function() {
+        return {
+            restrict: 'E',
+            templateUrl: '/modules/quizzes/views/question.html'
         };
     });
 
