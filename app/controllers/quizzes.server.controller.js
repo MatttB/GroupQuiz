@@ -21,10 +21,30 @@ exports.create = function(req, res) {
 	quiz.questions = [{
 		title: '',
 		hint: '',
+		attemptsBeforeHint: -1,
 		answer: [''],
+		ignoreCapitalisation: true,
 		wrongAnswers: [],
+		timeLimit: 0,
+		pointsAwarded: 1,
+		questionType: 'Text Input',
+		multipleChoiceValidity: false,
 		insert: true
 	}];
+
+	/**
+	 *
+	 * {
+				title: '',
+				hint: '',
+				attemptsBeforeHint: -1,
+				answer: [],
+				ignoreCapitalisation: false,
+				wrongAnswers: [],
+				timeLimit: 0,
+				pointsAwarded: 1
+			}
+	 */
 
 	quiz.save(function(err) {
 		if (err) {

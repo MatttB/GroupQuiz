@@ -61,6 +61,7 @@ var SummarySchema = new Schema({
 	}
 });
 
+/**
 var QuestionsSchema = mongoose.model('Summary', SummarySchema);
-
+**/
 module.exports = SummarySchema;

@@ -1,0 +1,82 @@
+<div class="row">
+    <div class="panel panel-default">
+        <div class="panel panel-heading">
+            <h5>Question Settings <span tooltip="These values can be overridden for every question in quiz settings" class="glyphicon glyphicon-exclamation-sign"></span></h5>
+        </div>
+        <div class="panel panel-body">
+            <div class="col-xs-6">
+
+                <div class="panel-heading">
+                    Time limit (seconds) <span tooltip="Input 0 for no time limit" class="glyphicon glyphicon-info-sign"></span>
+                </div>
+                <div class="panel panel-body">
+                    <div class="input-group number-spinner">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" ng-click="changeTimeLimit(-1)" type="button"><span class="glyphicon glyphicon-minus"></span></button>
+                        </span>
+                        <input type="number" min="0" max="1000000" ng-minlength="0" ng-maxlength="1000000" data-ng-model="quiz.questions[currentPage-1].timeLimit" class="form-control text-center">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" ng-click="changeTimeLimit(1)" type="button"><span class="glyphicon glyphicon-plus"></span></button>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="panel-heading">
+                    Points awarded <span tooltip="The number of points awarded when the question is answered correctly" class="glyphicon glyphicon-info-sign"></span>
+                </div>
+                <div class="panel panel-body">
+                    <div class="input-group number-spinner">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" ng-click="changePointsAwarded(-1)" type="button"><span class="glyphicon glyphicon-minus"></span></button>
+                        </span>
+                        <input type="number" min="1" max="1000000" ng-minlength="1" ng-maxlength="1000000" data-ng-model="quiz.questions[currentPage-1].pointsAwarded" class="form-control text-center">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" ng-click="changePointsAwarded(1)"><span class="glyphicon glyphicon-plus"></span></button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-6">
+
+                <div class="panel-heading">
+                    Number of quiz attempts before hinting <span tooltip="Input -1 to never hint; 0 to always hint" class="glyphicon glyphicon-info-sign"></span>
+                </div>
+                <div class="panel panel-body">
+                    <div class="input-group number-spinner">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" ng-click="changeAttemptsBeforeHint(-1)" type="button"><span class="glyphicon glyphicon-minus"></span></button>
+                        </span>
+                        <input type="number" data-ng-model="quiz.questions[currentPage-1].attemptsBeforeHint" min="-1" max="1000000" ng-minlength="-1" ng-maxlength="1000000" class="form-control text-center">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" ng-click="changeAttemptsBeforeHint(1)" type="button"><span class="glyphicon glyphicon-plus"></span></button>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="panel-heading">
+                    Question type <span tooltip-html-unsafe="<p>
+                                                                <li>The question defaults to Text Input</li>
+                                                                <li>Multiple Choice is available when there are 3 incorrect answers</li>
+                                                                <li>Add incorrect answers with the plus button to the right of that section</li>
+                                                            </p>" class="glyphicon glyphicon-info-sign">
+                                 </span></h5>
+                </div>
+                <div class="form-group">
+
+                    <div class="btn-group col-sm-6" data-toggle="buttons">
+                        <label class="btn btn-default btn-block"  ng-class="{active:quiz.questions[currentPage-1].questionType==='Text Input'}" ng-click="setActive('Text Input')">
+                            <input type="radio">
+                            Text Input
+                        </label>
+                    </div>
+                    <div class="btn-group col-sm-6" data-toggle="buttons">
+                        <label class="btn btn-default btn-block" ng-class="{active:quiz.questions[currentPage-1].questionType==='Multiple Choice',disabled:quiz.questions[currentPage-1].multipleChoiceValidity===false}" ng-click="setActive('Multiple Choice')">
+                            <input type="radio">
+                            Multiple Choice
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

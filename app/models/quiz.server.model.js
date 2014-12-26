@@ -19,7 +19,17 @@ var validateQuestions = function(questions){
 	}
 	var noErr = false;
 	var i = -1;
-	questions.some(function(question){
+
+	var inRange = function(value, low, high){
+		if( (value > high) || (value < low) ){
+			return false;
+		}
+		else{
+			return true;
+		}
+	};
+
+	questions.some(function(question){//for each question
 		i++;
 		if(!question.title || !question.answer || !question.wrongAnswers){
 			console.log('title, answer or wrongAnswers is falsy');
@@ -28,6 +38,10 @@ var validateQuestions = function(questions){
 		else if(question.title.length < 1 || question.title.length > 140 || question.answer.length < 1){
 			console.log('title length err or answer array length err');
 			return true;//either title has no length/too long or answer array has no length
+		}
+		else if( (!inRange(question.timeLimit, -1, 1000000)) || (!inRange(question.pointsAwarded, 1, 1000000)) || (!inRange(question.attemptsBeforeHint, -1, 1000000)) ){
+			console.log('per-q settings now in range');
+			return true;//per-question settings not in range
 		}
 		else{//so now we can iterate through the answer array's length as we know it has length...
 			for(var a = 0; a < question.answer.length; a++){//check if each correct answer has length, less than 70chars

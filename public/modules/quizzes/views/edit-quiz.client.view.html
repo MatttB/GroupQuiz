@@ -1,10 +1,12 @@
-<section data-ng-controller="QuizzesController as quizzes" data-ng-init="findOne()">
-    <div class="page-header">
-        <h1>Edit {{quiz.summary[0].name.substring(0,20)}}</h1>
-    </div>
 
-    <div class="panel panel-default">
+
+<section data-ng-controller="QuizzesController as quizzes" data-ng-init="findOne()">
+        <div class="page-header">
+            <h1>Edit {{quiz.summary[0].name.substring(0,20)}}</h1>
+        </div>
+
+        <div class="panel panel-default">
             <!-- tab content container -->
             <quiz-tabs></quiz-tabs>
-    </div>
+        </div>
 </section>

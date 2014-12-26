@@ -14,6 +14,32 @@ module.exports = function(grunt) {
 	// Project Configuration
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
+		closureLint: {
+			app:{
+			  closureLinterPath : '/path/to/closure_linter/folder',
+			  command: 'gjslint',
+			  src: [ 'app/scripts/controllers/**',
+					 'app/scripts/services/**',
+					 'app/scripts/app.js' ],
+			  options: {
+				stdout: true,
+				strict: true
+			  }
+			}
+		  },
+		  closureFixStyle: {
+			app:{
+			  closureLinterPath : '/path/to/closure_linter/folder',
+			  command: 'fixjsstyle',
+			  src: [ 'app/scripts/controllers/**',
+					 'app/scripts/services/**',
+					 'app/scripts/app.js' ],
+			  options: {
+				stdout: true,
+				strict: true
+			  }
+			}
+		},
 		watch: {
 			serverViews: {
 				files: watchFiles.serverViews,
@@ -141,6 +167,7 @@ module.exports = function(grunt) {
 
 	// Load NPM tasks
 	require('load-grunt-tasks')(grunt);
+	grunt.loadNpmTasks('grunt-closure-linter');
 
 	// Making grunt default to force in order not to break the project.
 	grunt.option('force', true);
