@@ -20,13 +20,8 @@ var validateQuestions = function(questions){
 	var noErr = false;
 	var i = -1;
 
-	var inRange = function(value, low, high){
-		if( (value > high) || (value < low) ){
-			return false;
-		}
-		else{
-			return true;
-		}
+	var inRange = function(value, low, high) {
+		return !( (value > high) || (value < low) );
 	};
 
 	questions.some(function(question){//for each question
