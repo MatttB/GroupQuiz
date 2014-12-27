@@ -24,6 +24,21 @@ var validateQuestions = function(questions){
 		return !( (value > high) || (value < low) );
 	};
 
+	var validateImgurUrl = function(imgurUrl){//returns true if valid; false if invalid
+		console.log(imgurUrl);
+		if(imgurUrl !== ''){
+			var pattern = /^https?:\/\/(i.)?imgur\.com\/[a-zA-Z0-9]{5,8}\.(?:jpe?g|gif|png)$/;
+			/*
+			 starts with http, 's' is optional, then must have '://', 'i.' is optional, must have 'imgur.com/',
+			 then must have 5-8 alphanumeric characters in a row, then '.', then either 'jpg' (or 'jpeg'), 'gif', or 'png', and these must be at the end.
+			 */
+			return (pattern.test(imgurUrl));
+		}
+		else{
+			return true;
+		}
+	};
+
 	questions.some(function(question){//for each question
 		i++;
 		if(!question.title || !question.answer || !question.wrongAnswers){
@@ -37,6 +52,10 @@ var validateQuestions = function(questions){
 		else if( (!inRange(question.timeLimit, -1, 1000000)) || (!inRange(question.pointsAwarded, 1, 1000000)) || (!inRange(question.attemptsBeforeHint, -1, 1000000)) ){
 			console.log('per-q settings now in range');
 			return true;//per-question settings not in range
+		}
+		else if(!validateImgurUrl(question.questionImage)){
+			console.log('question image not valid');
+			return true;//question image invalid form
 		}
 		else{//so now we can iterate through the answer array's length as we know it has length...
 			for(var a = 0; a < question.answer.length; a++){//check if each correct answer has length, less than 70chars

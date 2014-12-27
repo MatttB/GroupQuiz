@@ -7,13 +7,33 @@
                     <div class="controls">
                         <input type="text" data-ng-model="quiz.summary[0].name" id="name" class="form-control" ng-maxlength="70" maxlength="70" placeholder="Quiz Name" ng-trim="true" required>
                         <textarea class="form-control" rows="5" data-ng-model="quiz.summary[0].desc" id="desc" ng-maxlength="140" maxlength="140" placeholder="Quiz description" ng-trim="true"></textarea>
+                        <br>
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <input type="text" data-ng-model="quiz.summary[0].quizVideo" id="quizVideo" class="form-control" ng-maxlength="140" maxlength="140" placeholder="Quiz Youtube video URL" ng-trim="true" maxlength="140">
+                            </div>
+                            <div class="panel-body">
+                                <div class="embed-responsive embed-responsive-16by9" ng-show="validVideoUrl"><!--  ng-if="validateYoutubeUrl(quiz.summary[0].quizVideo)"-->
+                                    <iframe class="embed-responsive-item" ng-src="{{returnVideoId(quiz.summary[0].quizVideo)}}"></iframe>
+                                </div>
+                                <pre ng-show="!validVideoUrl">Enter a valid youtube URL for a live preview.
+                                    EG: https://www.youtube.com/watch?v=wy-lXL_eEAA</pre>
+                            </div>
+                        </div>
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <input type="text" data-ng-model="quiz.summary[0].quizImage" id="quizImage" class="form-control" ng-maxlength="140" maxlength="140" placeholder="Quiz Image URL" ng-trim="true" maxlength="35">
+                            </div>
+                            <div class="panel-body">
+                                <img ng-if=" ( (quiz.summary[0].quizImage.substring(0,7) === 'http://') || (quiz.summary[0].quizImage.substring(0,8) === 'https://') ) " ng-src="{{quiz.summary[0].quizImage}}" width="100%" alt="Image preview failed to load. Valid imgur links are in the form: https://imgur.com/Sudf246.png"/>
+                                <pre ng-if=" !( (quiz.summary[0].quizImage.substring(0,7) === 'http://') || (quiz.summary[0].quizImage.substring(0,8) === 'https://') ) ">Start your URL with http:// to view a live preview of the image
+                                EG: http://i.imgur.com/Sudf246.png</pre>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="form-group">
                     <input type="submit" value="Update" class="btn btn-primary">
-                </div>
-                <div data-ng-show="error" class="text-danger">
-                    <strong data-ng-bind="error"></strong>
                 </div>
             </fieldset>
         </form>

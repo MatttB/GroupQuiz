@@ -1,8 +1,8 @@
 'use strict';
 
 // Quizzes controller
-angular.module('quizzes').controller('QuizzesController', ['$scope', '$stateParams', '$location', 'Authentication', 'Quizzes',
-	function($scope, $stateParams, $location, Authentication, Quizzes, Question ) {
+angular.module('quizzes').controller('QuizzesController', ['$scope', '$stateParams', '$location', '$sce', 'Authentication', 'Quizzes',
+	function($scope, $stateParams, $location, $sce, Authentication, Quizzes, Question ) {
 		$scope.authentication = Authentication;
 		// Create new Quiz
 		$scope.create = function() {
@@ -10,7 +10,9 @@ angular.module('quizzes').controller('QuizzesController', ['$scope', '$statePara
 			var quiz = new Quizzes ({
 				summary: {
 					name: this.name,
-					desc: this.desc
+					desc: this.desc,
+					quizImage: this.quizImage,
+					quizVideo: this.quizVideo
 				},
 				questions: [{
 					'title': '',
@@ -22,6 +24,7 @@ angular.module('quizzes').controller('QuizzesController', ['$scope', '$statePara
 					'timeLimit': 0,
 					'pointsAwarded': 1,
 					'questionType': 'Text Input',
+					'questionImage': '',
 					'multipleChoiceValidity': false
 				}],
 				settings: {}
@@ -119,7 +122,8 @@ angular.module('quizzes').controller('QuizzesController', ['$scope', '$statePara
 				'timeLimit': 0,
 				'pointsAwarded': 1,
 				'questionType': 'Text Input',
-				'multipleChoiceValidity': false
+				'multipleChoiceValidity': false,
+				'questionImage': ''
 			});
 			$scope.currentPage = $scope.currentPage + 1;
 			$scope.numPages = $scope.numPages + 1;
@@ -194,6 +198,11 @@ angular.module('quizzes').controller('QuizzesController', ['$scope', '$statePara
 			}
 			else{
 				change = true;
+			}
+
+			$scope.pattern = /^(i.)?imgur\.com\/[a-zA-Z0-9]{5,8}\.(?:jpe?g|gif|png)/;//regex checking for validity without protocol
+			if($scope.pattern.test(quiz.summary[0].quizImage)){//if valid without protocol
+				quiz.summary[0].quizImage = 'https://' + quiz.summary[0].quizImage;//add protocol
 			}
 			if(change) {//check if quiz has changed
 				//console.log(JSON.parse(JSON.stringify(quiz)));
@@ -282,15 +291,33 @@ angular.module('quizzes').controller('QuizzesController', ['$scope', '$statePara
 			}
 		};
 
-		$scope.setActive = function(val) {
-			$scope.checkMultipleChoiceValidity();
-			if(val === 'Multiple Choice' && !$scope.quiz.questions[$scope.currentPage-1].multipleChoiceValidity){
-				return;
+		$scope.validVideoUrl = false;
+
+		$scope.returnVideoId = function(videoUrl){
+			console.log(videoUrl);
+			var p = /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/;
+			if(videoUrl.match(p) !== null){
+				console.log(videoUrl.match(p));
+				$scope.validVideoUrl = true;
+				var newUrl = 'http://www.youtube.com/embed/' + videoUrl.match(p)[1];
+				return ($sce.trustAsResourceUrl(newUrl));
 			}
 			else{
-				$scope.quiz.questions[$scope.currentPage-1].questionType = val;
+				$scope.validVideoUrl = false;
 			}
 		};
+		/**
+		$scope.validateYoutubeUrl = function(){
+			console.log($scope.quiz.summary[0].quizVideo);
+			var p = /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/;
+			if($scope.quiz.summary[0].quizVideo.match(p) === null){
+				return false;
+			}
+			else{
+				return true;
+			}
+		};
+		 **/
 
 	}
 ]);

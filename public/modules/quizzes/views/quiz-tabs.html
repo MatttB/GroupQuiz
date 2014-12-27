@@ -21,5 +21,9 @@
 
         <!--  Settings Tab's Content  -->
         <settings ng-show="tab.isSet(3)"></settings>
+
+    </div>
+    <div data-ng-show="error" class="alert alert-danger" role="alert">
+        <strong data-ng-bind="error"></strong>
     </div>
 </section>

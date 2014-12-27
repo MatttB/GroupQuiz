@@ -28,9 +28,11 @@ exports.create = function(req, res) {
 		timeLimit: 0,
 		pointsAwarded: 1,
 		questionType: 'Text Input',
+		questionImage: '',
 		multipleChoiceValidity: false,
 		insert: true
 	}];
+	console.log(quiz);
 
 	/**
 	 *

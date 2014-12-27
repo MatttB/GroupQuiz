@@ -28,6 +28,37 @@ var validateDesc = function(desc){
 };
 
 /**
+ *
+ * @param imgurUrl
+ * @returns {boolean}
+ */
+var validateImgurUrl = function(imgurUrl){
+	console.log(imgurUrl);
+	if(imgurUrl !== ''){
+		var pattern = /^https?:\/\/(i.)?imgur\.com\/[a-zA-Z0-9]{5,8}\.(?:jpe?g|gif|png)$/;
+		/*
+		 starts with http, 's' is optional, then must have '://', 'i.' is optional, must have 'imgur.com/',
+		 then must have 5-8 alphanumeric characters in a row, then '.', then either 'jpg' (or 'jpeg'), 'gif', or 'png', and these must be at the end.
+		 */
+		return (pattern.test(imgurUrl));
+	}
+	else{
+		return true;
+	}
+};
+
+var validateYoutubeUrl = function(youtubeUrl){
+	console.log(youtubeUrl);
+	if(youtubeUrl !== ''){
+		var p = /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/;
+		return (youtubeUrl.match(p)) ? true : false;
+	}
+	else{
+		return true;
+	}
+};
+
+/**
  * Questions Schema
  */
 var SummarySchema = new Schema({
@@ -53,6 +84,20 @@ var SummarySchema = new Schema({
 		default: '',
 		validate: [validateDesc, 'Description can not be more than 140 characters'],
 		ref: 'desc',
+		trim: true
+	},
+	quizImage: {
+		type: String,
+		default: '',
+		validate: [validateImgurUrl, 'The image link provided is not a valid imgur.com link'],
+		ref: 'imgurUrl',
+		trim: true
+	},
+	quizVideo: {
+		type: String,
+		default: '',
+		validate: [validateYoutubeUrl, 'The video link provided is not a valid Youtube link'],
+		ref: 'youtubeUrl',
 		trim: true
 	},
 	tags: {

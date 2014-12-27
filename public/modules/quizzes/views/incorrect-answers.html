@@ -11,7 +11,7 @@
                                                                 </p>" class="glyphicon glyphicon-info-sign">
                                                         </span></h5>
                 <span class="input-group-btn">
-                    <button tooltip="Add incorrect answer" ng-click="addWrongAnswer()" type="button" class="btn btn-primary btn-block"><span class="glyphicon glyphicon-plus"></span></button>
+                    <button tooltip="Add incorrect answer" tooltip-placement="left" ng-click="addWrongAnswer()" type="button" class="btn btn-primary btn-block"><span class="glyphicon glyphicon-plus"></span></button>
                 </span>
             </div>
         </div>
@@ -20,7 +20,7 @@
                 <div class="input-group">
                     <input type="text" class="form-control" data-ng-model="quiz.questions[currentPage-1].wrongAnswers[$index]" ng-maxlength="70" maxlength="70" ng-trim="true" required>
                     <span class="input-group-btn">
-                        <button tooltip="Remove incorrect answer" ng-click="delWrongAnswerByIndex($index)" class="btn btn-danger" type="button"><span class="glyphicon glyphicon-remove"></span></button>
+                        <button tooltip="Remove incorrect answer" tooltip-placement="left" ng-click="delWrongAnswerByIndex($index)" class="btn btn-danger" type="button"><span class="glyphicon glyphicon-remove"></span></button>
                     </span>
                 </div>
             </div>
