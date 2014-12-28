@@ -6,7 +6,7 @@
 
                     <div class="controls">
                         <div class="container-fluid">
-                            <div class="row" ng-hide="selected === undefined">
+                            <div class="row" collapse="selected === undefined">
                                 <input type="text" focus-on="selected !== undefined" placeholder="Search question titles" ng-model="selected" typeahead-on-select="typeaheadCallback()" typeahead="question.title for question in quiz.questions | filter:$viewValue | limitTo:8" class="form-control">
                             </div>
                             <br>
