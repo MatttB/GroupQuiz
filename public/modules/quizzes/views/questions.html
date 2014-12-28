@@ -7,7 +7,8 @@
                     <pagination ng-hide="loading" boundary-links="true" ng-click="update(check)" max-size="3" items-per-page="1" total-items="quiz.questions.length" ng-model="currentPage" class="pagination-xs" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></pagination>
                     <img ng-show="loading" alt="Loading..." class="text-center" src="modules/quizzes/img/loading.gif"/>
                     <span class="input-group-btn">
-                        <button tooltip="Add question" ng-click="addQuestion()" tooltip-placement="left" class="btn btn-primary" type="button"><span class="glyphicon glyphicon-plus"></span></button>
+                        <button tooltip="Search questions" ng-click="toggleSelected()" tooltip-placement="left" class="btn btn-primary" type="button"><span class="glyphicon glyphicon-search"></span></button>
+                        <button tooltip="Add question" ng-click="addQuestion()" tooltip-placement="top" class="btn btn-primary" type="button"><span class="glyphicon glyphicon-plus"></span></button>
                         <button tooltip="Remove question {{currentPage}}" tooltip-placement="top" ng-click="delCurrentQuestion()" class="btn btn-danger" type="button"><span class="glyphicon glyphicon-trash"></span></button>
                     </span>
                 </div>

@@ -5,8 +5,11 @@
                 <div class="form-group">
 
                     <div class="controls">
-                        <br>
                         <div class="container-fluid">
+                            <div class="row" ng-hide="selected === undefined">
+                                <input type="text" focus-on="selected !== undefined" placeholder="Search question titles" ng-model="selected" typeahead-on-select="typeaheadCallback()" typeahead="question.title for question in quiz.questions | filter:$viewValue | limitTo:8" class="form-control">
+                            </div>
+                            <br>
                             <div class="row">
                                 <input type="text" data-ng-model="quiz.questions[currentPage-1].title" id="question" class="form-control" ng-maxlength="70" maxlength="70" placeholder="Question title" ng-trim="true" required>
                             </div>

@@ -318,6 +318,36 @@ angular.module('quizzes').controller('QuizzesController', ['$scope', '$statePara
 			}
 		};
 		 **/
+		$scope.questionValues = {
+			'timeLimit': 0,
+			'pointsAwarded': 1,
+			'attemptsBeforeHint': -1,
+			'questionType': 'Text Input'
+		};
+
+		$scope.selected = undefined;
+
+		$scope.toggleSelected = function(){
+			if($scope.selected === ''){
+				$scope.selected = undefined;
+			}
+			else{
+				$scope.selected = '';
+			}
+
+		};
+
+		$scope.typeaheadCallback = function(){
+			console.log('called');
+			for(var i = 0; i < $scope.quiz.questions.length; i++){
+				if($scope.quiz.questions[i].title === $scope.selected){
+					$scope.currentPage = i + 1;
+					break;
+				}
+			}
+			$scope.update(true);
+			$scope.selected = undefined;
+		};
 
 	}
 ]);
