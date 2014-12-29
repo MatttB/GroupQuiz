@@ -21,11 +21,13 @@
 
                         <div class="panel panel-default">
                             <div class="panel-heading">
-                                <input type="text" data-ng-model="quiz.questions[currentPage-1].questionImage" id="quizImage" class="form-control" ng-maxlength="140" maxlength="140" placeholder="Question Image URL" ng-trim="true" maxlength="35">
+                                <input type="text" data-ng-model="quiz.questions[currentPage-1].questionImage" id="questionImage" class="form-control" ng-maxlength="140" maxlength="140" placeholder="Quiz Image URL" ng-trim="true" maxlength="35">
                             </div>
                             <div class="panel-body">
-                                <img ng-if=" ( (quiz.questions[currentPage-1].questionImage.substring(0,7) === 'http://') || (quiz.questions[currentPage-1].questionImage.substring(0,8) === 'https://') ) " ng-src="{{quiz.questions[currentPage-1].questionImage}}" width="100%" alt="Image preview failed to load. Valid imgur links are in the form: https://imgur.com/Sudf246.png"/>
-                                <pre ng-if=" !( (quiz.questions[currentPage-1].questionImage.substring(0,7) === 'http://') || (quiz.questions[currentPage-1].questionImage.substring(0,8) === 'https://') ) ">Start your URL with http:// to view a live preview of the image
+                                <div collapse="!validQuestionImgurUrl">
+                                    <img ng-src="{{validateQuestionImgurUrl(quiz.questions[currentPage-1].questionImage)}}" width="100%" alt="Image preview failed to load. Valid imgur links are in the form: https://imgur.com/Sudf246.png"/>
+                                </div>
+                                <pre collapse="validQuestionImgurUrl">Enter a valid imgur.com URL
                                 EG: http://i.imgur.com/Sudf246.png</pre>
                             </div>
                         </div>

@@ -12,7 +12,8 @@ angular.module('quizzes').controller('QuizzesController', ['$scope', '$statePara
 					name: this.name,
 					desc: this.desc,
 					quizImage: this.quizImage,
-					quizVideo: this.quizVideo
+					quizVideo: this.quizVideo,
+					youtubeEmbedUrl: this.youtubeEmbedUrl
 				},
 				questions: [{
 					'title': '',
@@ -143,10 +144,13 @@ angular.module('quizzes').controller('QuizzesController', ['$scope', '$statePara
 			$scope.update(false);//update with no check on whether it should update
 		};
 
+
+
 		// Update existing Quiz
 		var quizComparator = [];
 		$scope.check = true;
 		$scope.noCheck = false;
+		$scope.pattern = /^(i.)?imgur\.com\/[a-zA-Z0-9]{5,8}\.(?:jpe?g|gif|png)/;//regex checking for validity without protocol
 		$scope.update = function(check) {
 			$scope.loading = true;
 			var quiz = $scope.quiz;
@@ -200,7 +204,6 @@ angular.module('quizzes').controller('QuizzesController', ['$scope', '$statePara
 				change = true;
 			}
 
-			$scope.pattern = /^(i.)?imgur\.com\/[a-zA-Z0-9]{5,8}\.(?:jpe?g|gif|png)/;//regex checking for validity without protocol
 			if($scope.pattern.test(quiz.summary[0].quizImage)){//if valid without protocol
 				quiz.summary[0].quizImage = 'https://' + quiz.summary[0].quizImage;//add protocol
 			}
@@ -293,36 +296,53 @@ angular.module('quizzes').controller('QuizzesController', ['$scope', '$statePara
 
 		$scope.validVideoUrl = false;
 
-		$scope.returnVideoId = function(videoUrl){
-			console.log(videoUrl);
-			var p = /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/;
-			if(videoUrl.match(p) !== null){
-				console.log(videoUrl.match(p));
-				$scope.validVideoUrl = true;
-				var newUrl = 'http://www.youtube.com/embed/' + videoUrl.match(p)[1];
-				return ($sce.trustAsResourceUrl(newUrl));
+		$scope.validImgurUrl = false;
+
+		$scope.validateImgurUrl = function(imgurUrl){
+			console.log('image validation:..');
+			var imgurPattern = /^(i.)?imgur\.com\/[a-zA-Z0-9]{5,8}\.(?:jpe?g|gif|png)/;
+			if(imgurPattern.test(imgurUrl)){//if valid without protocol
+				console.log('valid without protocol');
+				$scope.quiz.summary[0].quizImage = 'https://' + imgurUrl;//add protocol
+				$scope.validImgurUrl = true;
+				return $scope.quiz.summary[0].quizImage;
 			}
 			else{
-				$scope.validVideoUrl = false;
+				imgurPattern = /^https?:\/\/(i.)?imgur\.com\/[a-zA-Z0-9]{5,8}\.(?:jpe?g|gif|png)$/;
+				if(imgurPattern.test(imgurUrl)){
+					console.log('valid WITH protocol');
+					console.log(imgurUrl);
+					$scope.validImgurUrl = true;
+					return imgurUrl;
+				}
 			}
+			$scope.validImgurUrl = false;
+			return 'http://';
 		};
-		/**
-		$scope.validateYoutubeUrl = function(){
-			console.log($scope.quiz.summary[0].quizVideo);
-			var p = /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/;
-			if($scope.quiz.summary[0].quizVideo.match(p) === null){
-				return false;
+
+		$scope.validYoutubeUrl = false;
+
+		$scope.validateYoutubeUrl = function(youtubeUrl){
+			console.log('yt validation:..');
+			if(youtubeUrl.substring(0,4) !== 'http'){
+				youtubeUrl = 'https://' + youtubeUrl;
 			}
-			else{
-				return true;
+			var youtubePattern = /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/;
+			//https://www.youtube.com/watch?v=be-LbSaEzZQ&list=RDHCXXF0DFZWayA
+			if(youtubePattern.test(youtubeUrl)){
+				console.log('YT valid WITH protocol');
+				console.log(youtubeUrl);
+				$scope.validYoutubeUrl = true;
+				console.log(youtubeUrl.match(youtubePattern));
+				var matchInfo = youtubeUrl.match(youtubePattern);
+				var indexOfVideoId = matchInfo[0].indexOf(matchInfo[1]);
+				$scope.quiz.summary[0].youtubeEmbedUrl = 'https://www.youtube.com/embed/' + matchInfo[0].substring(indexOfVideoId,indexOfVideoId+11) + '?' + matchInfo[0].substring(indexOfVideoId+12);
+				return $sce.trustAsResourceUrl($scope.quiz.summary[0].youtubeEmbedUrl);
 			}
-		};
-		 **/
-		$scope.questionValues = {
-			'timeLimit': 0,
-			'pointsAwarded': 1,
-			'attemptsBeforeHint': -1,
-			'questionType': 'Text Input'
+			else {
+				$scope.validYoutubeUrl = false;
+				return 'http://';
+			}
 		};
 
 		$scope.selected = undefined;
@@ -348,6 +368,139 @@ angular.module('quizzes').controller('QuizzesController', ['$scope', '$statePara
 			$scope.update(true);
 			$scope.selected = undefined;
 		};
+
+		$scope.validQuestionImgurUrl = false;
+
+		$scope.validateQuestionImgurUrl = function(imgurUrl){
+			console.log('question image validation:..');
+			var imgurPattern = /^(i.)?imgur\.com\/[a-zA-Z0-9]{5,8}\.(?:jpe?g|gif|png)/;
+			if(imgurPattern.test(imgurUrl)){//if valid without protocol
+				console.log('valid without protocol');
+				$scope.quiz.questions[currentPage-1].questionImage = 'https://' + imgurUrl;//add protocol
+				$scope.validQuestionImgurUrl = true;
+				return $scope.quiz.summary[0].quizImage;
+			}
+			else{
+				imgurPattern = /^https?:\/\/(i.)?imgur\.com\/[a-zA-Z0-9]{5,8}\.(?:jpe?g|gif|png)$/;
+				if(imgurPattern.test(imgurUrl)){
+					console.log('valid WITH protocol');
+					console.log(imgurUrl);
+					$scope.validQuestionImgurUrl = true;
+					return imgurUrl;
+				}
+			}
+			$scope.validQuestionImgurUrl = false;
+			return 'http://';
+		};
+
+		/** Settings tab functions / vars**/
+
+		$scope.questionValues = {
+			'timeLimit': 0,
+			'pointsAwarded': 1,
+			'attemptsBeforeHint': -1,
+			'questionType': 'Text Input'
+		};
+
+		$scope.changeAllTimeLimits = function(change){
+			var newValue = $scope.questionValues.timeLimit + change;
+			if(newValue < 0){
+				$scope.questionValues.timeLimit = 0;
+			}
+			else if(newValue > 1000000){
+				$scope.questionValues.timeLimit = 1000000;
+			}
+			else{
+				$scope.questionValues.timeLimit = newValue;
+			}
+		};
+
+		$scope.changeAllPointsAwarded = function(change){
+			var newValue = $scope.quiz.questions[$scope.currentPage-1].pointsAwarded + change;
+			if(newValue < 1){
+				$scope.questionValues.pointsAwarded = 1;
+			}
+			else if(newValue > 1000000){
+				$scope.questionValues.pointsAwarded = 1000000;
+			}
+			else{
+				$scope.questionValues.pointsAwarded = newValue;
+			}
+		};
+
+		$scope.changeAllAttemptsBeforeHint = function(change){
+			var newValue = $scope.questionValues.attemptsBeforeHint + change;
+			if(newValue < -1){
+				$scope.questionValues.attemptsBeforeHint = -1;
+			}
+			else if(newValue > 1000000){
+				$scope.questionValues.attemptsBeforeHint = 1000000;
+			}
+			else{
+				$scope.questionValues.attemptsBeforeHint = newValue;
+			}
+		};
+
+		$scope.applyAllQuestionDataValues = function(){
+			for(var i = 0; i < $scope.quiz.questions.length; i++){
+				$scope.quiz.questions[i].timeLimit = $scope.questionValues.timeLimit;
+				$scope.quiz.questions[i].pointsAwarded = $scope.questionValues.pointsAwarded;
+				$scope.quiz.questions[i].attemptsBeforeHint = $scope.questionValues.attemptsBeforeHint;
+			}
+		};
+
+		$scope.setAllQuestionTypes = function(qType){
+			console.log('setAllQTypes func called');
+			var i;//declare my iterator for my for loops
+			if(qType === 'Text Input'){
+				for(i = 0; i < $scope.quiz.questions.length; i++){
+					$scope.quiz.questions[i].questionType = 'Text Input';
+				}
+				$scope.allQuestionsValuesError = false;
+			}
+			else if(qType === 'Multiple Choice'){
+				var notQualified = [];
+				for(i = 0; i < $scope.quiz.questions.length; i++){
+					if($scope.quiz.questions[i].multipleChoiceValidity){
+						console.log('Should be multiple choice');
+						$scope.quiz.questions[i].questionType = 'Multiple Choice';
+					}
+					else{
+						console.log('Should be text input');
+						$scope.quiz.questions[i].questionType = 'Text Input';
+						notQualified.push((i+1).toString());
+					}
+				}
+				if(notQualified !== []){
+					//Build up error string of which ones do not qualify...
+					if(notQualified.length > 2){
+						var endString = ' and ' + notQualified.pop() + ' do not qualify for Multiple Choice.';
+						var startString = 'Questions ';
+						var midString = '';
+						for(i = 0; i < notQualified.length - 1; i++){
+							midString = midString + notQualified[i] + ', ';
+						}
+						midString = midString + notQualified.pop();
+						$scope.allQuestionsValuesError = startString + midString + endString;
+					}
+					else if(notQualified.length === 2){
+						$scope.allQuestionsValuesError = 'Questions ' + notQualified[0] + ' and ' + notQualified[1] + ' do not qualify for Multiple Choice';
+					}
+					else{
+						$scope.allQuestionsValuesError = 'Question ' + notQualified[0] + ' does not qualify for Multiple Choice';
+					}
+				}
+				else{
+					$scope.allQuestionsValuesError = false;
+				}
+				console.log('ALl Questions Values Error:');
+				console.log($scope.allQuestionsValuesError);
+			}
+
+		};
+
+		//End settings tabs funcs/vars
+
 
 	}
 ]);

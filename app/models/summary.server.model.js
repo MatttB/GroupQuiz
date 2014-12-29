@@ -100,6 +100,11 @@ var SummarySchema = new Schema({
 		ref: 'youtubeUrl',
 		trim: true
 	},
+	youtubeEmbedUrl: {
+		type: String,
+		default: '',
+		trim: true
+	},
 	tags: {
 		type: Array,
 		default: []

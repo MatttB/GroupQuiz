@@ -13,10 +13,12 @@
                                 <input type="text" data-ng-model="quiz.summary[0].quizVideo" id="quizVideo" class="form-control" ng-maxlength="140" maxlength="140" placeholder="Quiz Youtube video URL" ng-trim="true" maxlength="140">
                             </div>
                             <div class="panel-body">
-                                <div class="embed-responsive embed-responsive-16by9" ng-show="validVideoUrl"><!--  ng-if="validateYoutubeUrl(quiz.summary[0].quizVideo)"-->
-                                    <iframe class="embed-responsive-item" ng-src="{{returnVideoId(quiz.summary[0].quizVideo)}}"></iframe>
+                                <div collapse="!validYoutubeUrl">
+                                    <div class="embed-responsive embed-responsive-16by9"><!--  ng-if="validateYoutubeUrl(quiz.summary[0].quizVideo)"-->
+                                        <iframe class="embed-responsive-item" ng-src="{{validateYoutubeUrl(quiz.summary[0].quizVideo)}}"></iframe>
+                                    </div>
                                 </div>
-                                <pre ng-show="!validVideoUrl">Enter a valid youtube URL for a live preview.
+                                <pre collapse="validYoutubeUrl">Enter a valid youtube URL for a live preview.
                                     EG: https://www.youtube.com/watch?v=wy-lXL_eEAA</pre>
                             </div>
                         </div>
@@ -25,8 +27,10 @@
                                 <input type="text" data-ng-model="quiz.summary[0].quizImage" id="quizImage" class="form-control" ng-maxlength="140" maxlength="140" placeholder="Quiz Image URL" ng-trim="true" maxlength="35">
                             </div>
                             <div class="panel-body">
-                                <img ng-if=" ( (quiz.summary[0].quizImage.substring(0,7) === 'http://') || (quiz.summary[0].quizImage.substring(0,8) === 'https://') ) " ng-src="{{quiz.summary[0].quizImage}}" width="100%" alt="Image preview failed to load. Valid imgur links are in the form: https://imgur.com/Sudf246.png"/>
-                                <pre ng-if=" !( (quiz.summary[0].quizImage.substring(0,7) === 'http://') || (quiz.summary[0].quizImage.substring(0,8) === 'https://') ) ">Start your URL with http:// to view a live preview of the image
+                                <div collapse="!validImgurUrl">
+                                    <img ng-src="{{validateImgurUrl(quiz.summary[0].quizImage)}}" width="100%" alt="Image preview failed to load. Valid imgur links are in the form: https://imgur.com/Sudf246.png"/>
+                                </div>
+                                <pre collapse="validImgurUrl">Enter a valid imgur.com URL
                                 EG: http://i.imgur.com/Sudf246.png</pre>
                             </div>
                         </div>

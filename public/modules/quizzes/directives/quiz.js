@@ -52,6 +52,13 @@
         };
     });
 
+    app.directive('allQuestionsSettings', function() {
+        return {
+            restrict: 'E',
+            templateUrl: '/modules/quizzes/views/all-questions-settings.html'
+        };
+    });
+
     app.directive('correctAnswers', function(){
         return{
             restrict: 'E',

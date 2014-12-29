@@ -1,0 +1,78 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="panel panel-default">
+            <div class="panel panel-heading">
+                <h5>All questions settings <span tooltip="WARNING: submission of these values will override any per-question values you may have set" class="glyphicon glyphicon-exclamation-sign"></span></h5>
+            </div>
+            <div class="panel panel-body">
+                <div class="col-xs-6">
+
+                    <div class="panel-heading">
+                        Time limit (seconds) <span tooltip="Input 0 for no time limit" class="glyphicon glyphicon-info-sign"></span>
+                    </div>
+                    <div class="panel panel-body">
+                        <div class="input-group number-spinner">
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" ng-click="changeAllTimeLimits(-1)" type="button"><span class="glyphicon glyphicon-minus"></span></button>
+                            </span>
+                            <input type="number" min="0" max="1000000" ng-minlength="0" ng-maxlength="1000000" data-ng-model="questionValues.timeLimit" class="form-control text-center">
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" ng-click="changeAllTimeLimits(1)" type="button"><span class="glyphicon glyphicon-plus"></span></button>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="panel-heading">
+                        Points awarded <span tooltip="The number of points awarded when the question is answered correctly" class="glyphicon glyphicon-info-sign"></span>
+                    </div>
+                    <div class="panel panel-body">
+                        <div class="input-group number-spinner">
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" ng-click="changeAllPointsAwarded(-1)" type="button"><span class="glyphicon glyphicon-minus"></span></button>
+                            </span>
+                            <input type="number" min="1" max="1000000" ng-minlength="1" ng-maxlength="1000000" data-ng-model="questionValues.pointsAwarded" class="form-control text-center">
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" ng-click="changeAllPointsAwarded(1)" type="button"><span class="glyphicon glyphicon-plus"></span></button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-6">
+
+                    <div class="panel-heading">
+                        Number of quiz attempts before hinting <span tooltip="Input -1 to never hint; 0 to always hint" class="glyphicon glyphicon-info-sign"></span>
+                    </div>
+                    <div class="panel panel-body">
+                        <div class="input-group number-spinner">
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" ng-click="changeAllAttemptsBeforeHint(-1)" type="button"><span class="glyphicon glyphicon-minus"></span></button>
+                            </span>
+                            <input type="number" data-ng-model="questionValues.attemptsBeforeHint" min="-1" max="1000000" ng-minlength="-1" ng-maxlength="1000000" class="form-control text-center">
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" ng-click="changeAllAttemptsBeforeHint(1)" type="button"><span class="glyphicon glyphicon-plus"></span></button>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="panel-heading">
+                        Question type <span tooltip-html-unsafe="<p>
+                                                                    <li>Pick whether all questions should be text input or multiple choice</li>
+                                                                    <li>If Multiple choice is chosen, it may not be able to set all questions to it</li>
+                                                                </p>" class="glyphicon glyphicon-info-sign">
+                                     </span></h5>
+                    </div>
+                    <div class="text-center">
+                        <div class="btn-group">
+                            <label ng-click="setAllQuestionTypes('Text Input')" class="btn btn-primary" ng-model="questionValues.questionType" btn-radio="'Text Input'">Text Input</label>
+                            <label ng-click="setAllQuestionTypes('Multiple Choice')" class="btn btn-primary" ng-model="questionValues.questionType" btn-radio="'Multiple Choice'">Multiple Choice</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button class="btn btn-primary" ng-click="applyAllQuestionDataValues()">Apply Values</button>
+            <div collapse="!allQuestionsValuesError" class="alert alert-warning" role="alert">
+                <strong ng-show="allQuestionsValuesError" data-ng-bind="allQuestionsValuesError"></strong>
+            </div>
+        </div>
+    </div>
+</div>

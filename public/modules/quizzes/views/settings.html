@@ -2,6 +2,10 @@
     <div class="panel panel-default">
         <!-- Default panel contents -->
         <div class="panel-heading"><h4>{{quiz.summary[0].name}} ― <i>{{quiz.summary[0].desc}}</i></h4></div>
+
+        <all-questions-settings></all-questions-settings>
+
+
         <!-- List group -->
         <ul class="list-group">
             <div ng-repeat="question in quiz.questions track by $index">
@@ -9,17 +13,6 @@
                     <div class="row">
                         <button type="button" ng-click="tab.setTab(2);gotoQuestion($index+1)" class="btn btn-primary btn-md clearfix"><span class="glyphicon glyphicon-edit"></span></button>
                         {{question.title}}
-                        <div class="btn-group" data-toggle="buttons">
-                            <label class="btn btn-primary active">
-                                <input type="radio" name="options" id="option1" autocomplete="off" checked> Radio 1 (preselected)
-                            </label>
-                            <label class="btn btn-primary">
-                                <input type="radio" name="options" id="option2" autocomplete="off"> Radio 2
-                            </label>
-                            <label class="btn btn-primary">
-                                <input type="radio" name="options" id="option3" autocomplete="off"> Radio 3
-                            </label>
-                        </div>
                     </div>
                 </li>
             </div>

@@ -12,15 +12,3 @@ angular.module('quizzes').factory('Quizzes', ['$resource',
 	}
 ]);
 
-function Question(){
-	this.title = '';
-	this.hint = '';
-	this.answer = [];
-	this.wrongAnswers = [];
-}
-
-angular.module('quizzes').factory('questionConstructor', [
-	function() {
-		return new Question();
-	}
-]);
