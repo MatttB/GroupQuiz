@@ -376,7 +376,7 @@ angular.module('quizzes').controller('QuizzesController', ['$scope', '$statePara
 			var imgurPattern = /^(i.)?imgur\.com\/[a-zA-Z0-9]{5,8}\.(?:jpe?g|gif|png)/;
 			if(imgurPattern.test(imgurUrl)){//if valid without protocol
 				console.log('valid without protocol');
-				$scope.quiz.questions[currentPage-1].questionImage = 'https://' + imgurUrl;//add protocol
+				$scope.quiz.questions[$scope.currentPage-1].questionImage = 'https://' + imgurUrl;//add protocol
 				$scope.validQuestionImgurUrl = true;
 				return $scope.quiz.summary[0].quizImage;
 			}
