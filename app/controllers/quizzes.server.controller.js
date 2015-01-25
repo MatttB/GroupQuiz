@@ -32,6 +32,7 @@ exports.create = function(req, res) {
 		multipleChoiceValidity: false,
 		insert: true
 	}];
+	quiz.results = [];
 	console.log(quiz);
 
 	/**
