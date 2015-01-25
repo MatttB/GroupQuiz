@@ -1,0 +1,31 @@
+body{
+    font-family: 'Roboto', sans-serif;
+}
+
+
+.panel-heading{
+    background-color: #f5f5f5;
+    text-align: center;
+    padding: 0;
+}
+
+.panel{
+    padding: 0%;
+}
+
+
+.panel-body{
+    padding: 0.5%;
+}
+
+.max-width-tab{
+    width:32%;
+}
+
+.nav, .pagination, .carousel, .panel-title a {
+    cursor: pointer;
+}
+
+.pagination-xs{
+    margin: 1px;
+}
