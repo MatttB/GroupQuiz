@@ -18,6 +18,7 @@ exports.create = function(req, res) {
 	summary.user = req.user;
 	summary.displayName = req.user.displayName;
 	quiz.summary = summary;
+	quiz.settings = {randomizeOrder: false};
 	quiz.questions = [{
 		title: '',
 		hint: '',
@@ -32,22 +33,8 @@ exports.create = function(req, res) {
 		multipleChoiceValidity: false,
 		insert: true
 	}];
-	quiz.results = [];
+	quiz.users = {'aUser':'lol'};
 	console.log(quiz);
-
-	/**
-	 *
-	 * {
-				title: '',
-				hint: '',
-				attemptsBeforeHint: -1,
-				answer: [],
-				ignoreCapitalisation: false,
-				wrongAnswers: [],
-				timeLimit: 0,
-				pointsAwarded: 1
-			}
-	 */
 
 	quiz.save(function(err) {
 		if (err) {
@@ -109,7 +96,8 @@ exports.delete = function(req, res) {
  * List of Quizzes
  */
 exports.list = function(req, res) { Quiz.find().sort('-created').populate('user', 'displayName').exec(function(err, quizzes) {
-		if (err) {
+		console.log('quizzes.list called');
+	if (err) {
 			return res.status(400).send({
 				message: errorHandler.getErrorMessage(err)
 			});
@@ -123,6 +111,7 @@ exports.list = function(req, res) { Quiz.find().sort('-created').populate('user'
  * Quiz middleware
  */
 exports.quizByID = function(req, res, next, id) { Quiz.findById(id).populate('user', 'displayName').exec(function(err, quiz) {
+		console.log('quiz by id');
 		if (err) return next(err);
 		if (! quiz) return next(new Error('Failed to load Quiz ' + id));
 		req.quiz = quiz ;

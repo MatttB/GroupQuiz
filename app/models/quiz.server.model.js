@@ -98,6 +98,10 @@ var QuizSchema = new Schema({
 		ref: 'questions',
 		validate: [validateQuestions, 'One or more of your questions is invalid']
 	},
+	users: {
+		type: Object,
+		default: {}
+	},
 	summary: [SummarySchema],
 	settings: [SettingsSchema]
 });

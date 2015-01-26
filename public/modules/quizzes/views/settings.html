@@ -4,6 +4,8 @@
         <div class="panel-heading"><h4>{{quiz.summary[0].name}} ― <i>{{quiz.summary[0].desc}}</i></h4></div>
 
         <all-questions-settings></all-questions-settings>
+        <input type="checkbox" ng-model="quiz.settings[0].randomizeOrder" class="ng-valid ng-dirty">
+        Randomise question order? <span tooltip="Should the order of questions be randomised when users are quizzed?" class="glyphicon glyphicon-info-sign"></span>
 
 
         <!-- List group -->

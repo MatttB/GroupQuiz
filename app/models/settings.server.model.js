@@ -19,9 +19,13 @@ var SettingsSchema = new Schema({
 	attemptsBeforeHint: {
 		type: Number,
 		default: 0
+	},
+	randomizeOrder: {
+		type: Boolean,
+		default: false
 	}
 });
-
+/*
 var SettingsSchema = mongoose.model('Settings', SettingsSchema);
-
+*/
 module.exports = SettingsSchema;

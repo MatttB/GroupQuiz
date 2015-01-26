@@ -12,6 +12,11 @@ angular.module('play').config(['$stateProvider',
 		state('playQuiz', {
 			url: '/play/:quizId',
 			templateUrl: 'modules/play/views/play-quiz.client.view.html'
-		});
+		}).
+		state('redirToQuiz', {
+				url: '/play/:quizId/start',
+				templateUrl: 'modules/play/views/start-quiz.client.view.html'
+			}
+		);
 	}
 ]);

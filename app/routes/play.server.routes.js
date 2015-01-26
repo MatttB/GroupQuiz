@@ -13,12 +13,10 @@ module.exports = function(app) {
         .get(quizzes.list);/*
         .post(users.requiresLogin, quizzes.create);*/
 
+
     app.route('/play/:quizId')
-        .get(users.requiresLogin, play.getQuiz, play.read);
-        /**
-        .put(users.requiresLogin, quizzes.hasAuthorization, quizzes.update)
-        .delete(users.requiresLogin, quizzes.hasAuthorization, quizzes.delete);
-         **/
+        .get(users.requiresLogin, play.workOutAction, play.performAction);
+    //check if logged in, get user object (for checking session attrib.), get Quiz from DB (stores in req.quiz),
 
     // Finish by binding the Quiz middleware
     app.param('quizId', play.quizByID);

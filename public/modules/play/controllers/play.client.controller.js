@@ -10,5 +10,13 @@ angular.module('play').controller('PlayController', ['$scope', '$stateParams', '
 				quizId: $stateParams.quizId
 			});
 		};
+
+		$scope.redirToQuiz = function(){
+			$scope.idek = Play.get({
+				quizId: $stateParams.quizId
+			});
+		};
+
+		$scope.quizId = $stateParams.quizId;
 	}
 ]);

@@ -28,7 +28,8 @@ angular.module('quizzes').controller('QuizzesController', ['$scope', '$statePara
 					'questionImage': '',
 					'multipleChoiceValidity': false
 				}],
-				settings: {}
+				settings: {},
+				users: {}
 			});
 /*
 
