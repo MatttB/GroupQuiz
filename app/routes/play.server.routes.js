@@ -15,9 +15,9 @@ module.exports = function(app) {
 
 
     app.route('/play/:quizId')
-        .get(users.requiresLogin, play.workOutAction, play.performAction);
-    //check if logged in, get user object (for checking session attrib.), get Quiz from DB (stores in req.quiz),
+        .get(users.requiresLogin, play.workOutAction, play.performAction, play.respond);
+    //check if logged in, work out actions, create session or return current session
 
-    // Finish by binding the Quiz middleware
+    // Finish by binding the Quiz middleware (get quiz)
     app.param('quizId', play.quizByID);
 };
