@@ -15,7 +15,8 @@ module.exports = function(app) {
 
 
     app.route('/play/:quizId')
-        .get(users.requiresLogin, play.workOutAction, play.performAction, play.respond);
+        .get(users.requiresLogin, play.workOutAction, play.performAction, play.respond)
+        .post(play.moveToDone, play.respondToPost);
     //check if logged in, work out actions, create session or return current session
 
     // Finish by binding the Quiz middleware (get quiz)

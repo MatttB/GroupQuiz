@@ -11,6 +11,8 @@ var mongoose = require('mongoose'),
     Quiz = mongoose.model('Quiz'),
     _ = require('lodash');
 
+//creating error handler for callback after quiz.update
+
 /**
 
 /**
@@ -27,7 +29,6 @@ exports.createSummary = function(req, res, next){
 };
 
 exports.read = function(req, res) {
-    console.log(req.quiz);
     res.jsonp(req.quiz);
 };
 
@@ -149,8 +150,6 @@ exports.performAction = function(req, res, next){
     if(req.action === 'createUserAndSession'){
         //TODO
         console.log('creating user and session in quiz');
-        console.log(req.user);
-        console.log(req);
         var user = {
             completedQuizSessions: [],
             session: newSession(),
@@ -177,7 +176,6 @@ exports.performAction = function(req, res, next){
         Quiz.update(conditions, update, {}, callback);
     }
     else{//return current question
-        //TODO
         console.log('returning current question');
         req.questionToSend = quiz.users[req.user._id].session.questions[0];
     }
@@ -185,5 +183,69 @@ exports.performAction = function(req, res, next){
 };
 
 exports.respond = function(req, res){
-    res.jsonp(req.questionToSend);
+    res.status(200).jsonp(req.questionToSend);
+    console.log('after response');
+};
+
+exports.moveToDone = function(req, res, next){
+    var quiz = req.quiz;
+    console.log(quiz.users);
+    quiz.users[req.user._id].session.questions[0].userAnswer = req.userAnswer;
+    quiz.users[req.user._id].session.questions[0].timeSubmitted = Date.now();
+    quiz.users[req.user._id].session.doneQuestions.push(quiz.users[req.user._id].session.questions.shift());
+    //work out what to do next()
+    if(quiz.users[req.user._id].session.questions.length === 0){//check if no q's left
+        req.action = 'endSession';
+    }
+    else{//questions are left, respond with question
+        req.action = 'respondWithQuestion';
+    }
+    next();
+};
+
+exports.respondToPost = function(req, res){
+    var quiz = req.quiz;
+    //Setting up Model.update() parameters;
+    var conditions = {'_id':quiz._id};
+    var update = {$set: {}};
+    var editedUser = {//initialise user object for update.
+        completedQuizSessions: quiz.users[req.user._id].completedQuizSessions,
+        session: quiz.users[req.user._id].session,
+        info: quiz.users[req.user._id].info
+    };
+
+    //responding to post
+    if(req.action === 'endSession'){
+        //move session to doneSessions, make session = false & update DB.
+        editedUser.completedQuizSessions.push(editedUser.session);
+        editedUser.session = false;
+        //setting up return summary...TEMP for now
+        req.questionToSend = {
+            'questionType': 'quizSummary',
+            'score': '100%'
+        };
+    }
+    else{//session still in progress
+        //return newQuestion & update DB
+        req.questionToSend = quiz.users[req.user._id].session.questions[0];
+    }
+    update.$set['users.' + req.user._id] = editedUser;
+    res.status(200).jsonp({'nextQuestion': req.questionToSend});
+    var errorCallback = function(err, doc){
+        if(err){
+            return res.status(400).send({
+                message: errorHandler.getErrorMessage(err)
+            });
+        }
+    };
+
+    Quiz.update(conditions, update, {}, errorCallback);
+};
+
+exports.handlePost = function(req, res){
+    console.log(req);
+    //take req.quiz
+    //work out what question was submitted.
+    //
+    res.jsonp({'HTTP':'SENT'});
 };

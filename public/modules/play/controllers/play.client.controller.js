@@ -6,15 +6,18 @@ angular.module('play').controller('PlayController', ['$scope', '$stateParams', '
 		$scope.authentication = Authentication;
 
 		$scope.findOne = function() {
-			$scope.quiz = Play.get({
+			$scope.question = Play.get({
 				quizId: $stateParams.quizId
 			});
 		};
 
-		$scope.redirToQuiz = function(){
-			$scope.idek = Play.get({
-				quizId: $stateParams.quizId
-			});
+		$scope.submitAnswer = function(){
+			console.log($scope.question.answerReturn);
+			var callback = function(res){
+				console.log(res.nextQuestion);
+				$scope.question = res.nextQuestion;
+			};
+			Play.save({quizId: $stateParams.quizId},{answer: $scope.question.answerReturn},callback);
 		};
 
 		$scope.quizId = $stateParams.quizId;
