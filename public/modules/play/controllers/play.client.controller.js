@@ -12,12 +12,12 @@ angular.module('play').controller('PlayController', ['$scope', '$stateParams', '
 		};
 
 		$scope.submitAnswer = function(){
-			console.log($scope.question.answerReturn);
+			console.log($scope.question.userAnswer);
 			var callback = function(res){
 				console.log(res.nextQuestion);
 				$scope.question = res.nextQuestion;
 			};
-			Play.save({quizId: $stateParams.quizId},{answer: $scope.question.answerReturn},callback);
+			Play.save({quizId: $stateParams.quizId},{userAnswer: $scope.question.userAnswer},callback);
 		};
 
 		$scope.quizId = $stateParams.quizId;

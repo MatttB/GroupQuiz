@@ -73,6 +73,7 @@ exports.update = function(req, res) {
 			res.jsonp(quiz);
 		}
 	});
+	console.log(quiz.settings);
 };
 
 /**

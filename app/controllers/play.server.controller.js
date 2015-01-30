@@ -66,7 +66,7 @@ exports.workOutAction = function(req, res, next){
     next();
 };
 
-exports.performAction = function(req, res, next){
+exports.performAction = function(req, res){
     var quiz = req.quiz;
 
     /*
@@ -112,7 +112,7 @@ exports.performAction = function(req, res, next){
         //creating questions:
         var questions = [];
         quiz.questions.forEach(appendQuestionCallback);
-        if(quiz.settings.randomizeOrder){
+        if(quiz.settings[0].randomizeOrder){
             questions = shuffleArray(questions);
         }
 
@@ -157,6 +157,7 @@ exports.performAction = function(req, res, next){
         };
         //now update quiz collection
         update.$set['users.' + req.user._id] = user;
+        res.jsonp(user.session.questions[0]);
         console.log(conditions,update);
         Quiz.update(conditions, update, {}, callback);
 
@@ -170,16 +171,15 @@ exports.performAction = function(req, res, next){
             completedQuizSessions: req.quiz.users[req.user._id].completedQuizSessions,//retain old data
             info: extractUserInfo()//keeps user info updated by updating at the start of a session...
         };
-
+        res.jsonp(userWithSession.session.questions[0]);
         //update quizzes collection
         update.$set['users.' + req.user._id] = userWithSession;
         Quiz.update(conditions, update, {}, callback);
     }
     else{//return current question
         console.log('returning current question');
-        req.questionToSend = quiz.users[req.user._id].session.questions[0];
+        res.jsonp(quiz.users[req.user._id].session.questions[0]);
     }
-    next();
 };
 
 exports.respond = function(req, res){
@@ -187,12 +187,26 @@ exports.respond = function(req, res){
     console.log('after response');
 };
 
-exports.moveToDone = function(req, res, next){
+/*
+   POST RESPONSE FUNCTIONS
+ */
+
+exports.handleData = function(req, res, next){
     var quiz = req.quiz;
+    console.log(req);
     console.log(quiz.users);
-    quiz.users[req.user._id].session.questions[0].userAnswer = req.userAnswer;
+
+    //extract answer info and move question to doneQuestions
+    quiz.users[req.user._id].session.questions[0].userAnswer = req.body.userAnswer;
     quiz.users[req.user._id].session.questions[0].timeSubmitted = Date.now();
     quiz.users[req.user._id].session.doneQuestions.push(quiz.users[req.user._id].session.questions.shift());
+    //answer moved to doneQuestions
+
+    //add info for response
+    quiz.users[req.user._id].session.questions[0].qNumber = quiz.users[req.user._id].session.doneQuestions.length + 1;
+    quiz.users[req.user._id].session.questions[0].nQuestions = quiz.users[req.user._id].session.doneQuestions.length + quiz.users[req.user._id].session.questions.length;
+    //info added
+
     //work out what to do next()
     if(quiz.users[req.user._id].session.questions.length === 0){//check if no q's left
         req.action = 'endSession';
@@ -203,22 +217,11 @@ exports.moveToDone = function(req, res, next){
     next();
 };
 
-exports.respondToPost = function(req, res){
+exports.respondToPost = function(req, res, next){
     var quiz = req.quiz;
-    //Setting up Model.update() parameters;
-    var conditions = {'_id':quiz._id};
-    var update = {$set: {}};
-    var editedUser = {//initialise user object for update.
-        completedQuizSessions: quiz.users[req.user._id].completedQuizSessions,
-        session: quiz.users[req.user._id].session,
-        info: quiz.users[req.user._id].info
-    };
 
     //responding to post
     if(req.action === 'endSession'){
-        //move session to doneSessions, make session = false & update DB.
-        editedUser.completedQuizSessions.push(editedUser.session);
-        editedUser.session = false;
         //setting up return summary...TEMP for now
         req.questionToSend = {
             'questionType': 'quizSummary',
@@ -226,11 +229,33 @@ exports.respondToPost = function(req, res){
         };
     }
     else{//session still in progress
-        //return newQuestion & update DB
+        //return newQuestion
         req.questionToSend = quiz.users[req.user._id].session.questions[0];
     }
-    update.$set['users.' + req.user._id] = editedUser;
     res.status(200).jsonp({'nextQuestion': req.questionToSend});
+    next();
+};
+
+exports.updateDB = function(req, res){
+    console.log('afterRes');
+    var quiz = req.quiz;
+    req.editedUser = {//initialise user object for update.
+        completedQuizSessions: quiz.users[req.user._id].completedQuizSessions,
+        session: quiz.users[req.user._id].session,
+        info: quiz.users[req.user._id].info
+    };
+
+    if(req.action === 'endSession') {
+        //move session to doneSessions, make session = false, ready for db update
+        req.editedUser.completedQuizSessions.push(req.editedUser.session);
+        req.editedUser.session = false;
+    }
+
+    //Setting up Model.update() parameters;
+    var conditions = {'_id':req.quiz._id};
+    var update = {$set: {}};
+    update.$set['users.' + req.user._id] = req.editedUser;
+
     var errorCallback = function(err, doc){
         if(err){
             return res.status(400).send({
@@ -242,10 +267,4 @@ exports.respondToPost = function(req, res){
     Quiz.update(conditions, update, {}, errorCallback);
 };
 
-exports.handlePost = function(req, res){
-    console.log(req);
-    //take req.quiz
-    //work out what question was submitted.
-    //
-    res.jsonp({'HTTP':'SENT'});
-};
+//END POST RESPONSE FUNCTIONS
