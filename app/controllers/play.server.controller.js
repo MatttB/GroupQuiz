@@ -202,11 +202,6 @@ exports.handleData = function(req, res, next){
     quiz.users[req.user._id].session.doneQuestions.push(quiz.users[req.user._id].session.questions.shift());
     //answer moved to doneQuestions
 
-    //add info for response
-    quiz.users[req.user._id].session.questions[0].qNumber = quiz.users[req.user._id].session.doneQuestions.length + 1;
-    quiz.users[req.user._id].session.questions[0].nQuestions = quiz.users[req.user._id].session.doneQuestions.length + quiz.users[req.user._id].session.questions.length;
-    //info added
-
     //work out what to do next()
     if(quiz.users[req.user._id].session.questions.length === 0){//check if no q's left
         req.action = 'endSession';
@@ -214,6 +209,14 @@ exports.handleData = function(req, res, next){
     else{//questions are left, respond with question
         req.action = 'respondWithQuestion';
     }
+
+    //add info for response
+    if(req.action !== 'endSession'){
+        quiz.users[req.user._id].session.questions[0].qNumber = quiz.users[req.user._id].session.doneQuestions.length + 1;
+        quiz.users[req.user._id].session.questions[0].nQuestions = quiz.users[req.user._id].session.doneQuestions.length + quiz.users[req.user._id].session.questions.length;
+    }
+    //info added
+
     next();
 };
 
