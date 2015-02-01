@@ -21,6 +21,8 @@ var generateSummary = function(originalQuestions, answeredQuestions, dateStarted
         averageTTA: 0,//worked out by summary.timeElapsed / (summary.nCorrect + summary.nWrong)
         nCorrect: 0,//incremented on iteration of answeredQuestions array
         nWrong: 0,//incremented on iteration of answeredQuestions array
+        maxPoints: 0,
+        nPoints: 0,
         questions: new Array(originalQuestions.length)//reserve memory for array, faster than .push();
     };
     answeredQuestions.forEach(function(answeredQuestion, index){
@@ -31,13 +33,30 @@ var generateSummary = function(originalQuestions, answeredQuestions, dateStarted
         console.log(originalQuestion);
 
         var workOutPoints = function(){
+            console.log('working out points');
+            console.log(originalQuestion[0].answer[0].toLowerCase());
+            console.log(answeredQuestion);
+
+            var toLower = function(stringValue){//checks if is a string before calling toLower because it can be null and would error
+                if(typeof stringValue === 'string'){
+                    return stringValue.toLowerCase();
+                }
+                else{
+                    return stringValue;
+                }
+            };
+
+            summary.maxPoints = summary.maxPoints + originalQuestion[0].pointsAwarded;
+
             if (originalQuestion[0].answer[0] === answeredQuestion.userAnswer){
                 summary.nCorrect ++;
-                return originalQuestion.pointsAwarded;
+                summary.nPoints = summary.nPoints + originalQuestion[0].pointsAwarded;
+                return originalQuestion[0].pointsAwarded;
             }
-            else if(originalQuestion.ignoreCapitalisation && (answeredQuestion.userAnswer.toLowerCase() === originalQuestion.answer[0].toLowerCase())){
+            else if(originalQuestion[0].ignoreCapitalisation && (toLower(answeredQuestion.userAnswer) === originalQuestion[0].answer[0].toLowerCase())){
                 summary.nCorrect ++;
-                return originalQuestion.pointsAwarded;
+                summary.nPoints = summary.nPoints + originalQuestion[0].pointsAwarded;
+                return originalQuestion[0].pointsAwarded;
             }
             else{
                 summary.nWrong ++;
@@ -46,8 +65,8 @@ var generateSummary = function(originalQuestions, answeredQuestions, dateStarted
         };
 
         summary.questions[index] = {
-            title: originalQuestion.title,
-            questionImage: originalQuestion.questionImage,
+            title: originalQuestion[0].title,
+            questionImage: originalQuestion[0].questionImage,
             points: workOutPoints()//also increments nWrong or nCorrect
         };
 
