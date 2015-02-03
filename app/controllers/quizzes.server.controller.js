@@ -63,8 +63,9 @@ exports.update = function(req, res) {
 	quiz = _.extend(quiz , req.body);
 	quiz.questions[0].insert = false;
 	quiz.questions.forEach(function(question){
-		question.questionId = mongoose.Types.ObjectId();
-		delete question.qId;
+		if(!question.questionId){
+			question.questionId = mongoose.Types.ObjectId();
+		}
 	});
 
 	quiz.save(function(err) {
