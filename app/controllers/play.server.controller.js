@@ -10,6 +10,7 @@ var mongoose = require('mongoose'),
     errorHandler = require('./errors'),
     Quiz = mongoose.model('Quiz'),
     _ = require('lodash'),
+    User = mongoose.model('User'),
     data = require('./data');
 
 //Function for generating question response from quiz input
@@ -241,7 +242,7 @@ exports.handleData = function(req, res, next){
     //work out what to do next()
     if(quiz.users[req.user._id].session.questions.length === 0){//check if no q's left
         req.action = 'endSession';
-        data.generateSessionSummary(req, res);
+        data.generateSessionSummary(req, res);//assigns summary to req.summary
     }
     else{//questions are left, respond with question
         req.action = 'respondWithQuestion';
@@ -274,6 +275,9 @@ exports.respondToPost = function(req, res, next){
 exports.updateDB = function(req, res){
     console.log('afterRes db update');
     var quiz = req.quiz;
+    var conditions,
+        update,
+        options;
     req.editedUser = {//initialise user object for update.
         completedQuizSessions: quiz.users[req.user._id].completedQuizSessions,
         session: quiz.users[req.user._id].session,
@@ -289,15 +293,37 @@ exports.updateDB = function(req, res){
     if(req.action === 'endSession') {
         //move session to doneSessions, make session = false, ready for db update
         console.log(req.editedUser.session);
+        console.log(req.summary);
         console.log('session ended');
         req.editedUser.completedQuizSessions.push(req.editedUser.session);
         req.editedUser.session = false;
+
+        //update users collection
+        conditions = {'_id':mongoose.Types.ObjectId(req.user._id)};
+        console.log(conditions);
+        console.log('LOGGED CONDITIONS');
+
+        update = {//setting up update parameter
+            $push: {
+                'quizzes': {//push object to quizzes attribute array of User
+                    quizSummary: quiz.summary[0],//with attribs of quiz summary from quiz creation
+                    sessionSummary: req.summary//  and session summary just generated and returned to user at end of session
+                }
+            }
+        };
+
+        options = {upsert: true};
+
+        User.update(conditions, update, options, function(err){console.log(err);});
+        //
     }
 
     //Setting up Model.update() parameters;
-    var conditions = {'_id':req.quiz._id};
-    var update = {$set: {}};
+    conditions = {'_id':req.quiz._id};
+    update = {$set: {}};
     update.$set['users.' + req.user._id] = req.editedUser;
+    console.log(quiz);
+    console.log('quiz logged');
 
     var errorCallback = function(err, doc){
         if(err){
