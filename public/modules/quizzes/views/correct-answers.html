@@ -18,7 +18,7 @@
     <div class="panel panel-body">
         <div ng-repeat="answer in quiz.questions[currentPage-1].answer track by $index">
             <div class="input-group">
-                <input type="text" class="form-control" data-ng-model="quiz.questions[currentPage-1].answer[$index]" ng-maxlength="70" maxlength="70" ng-trim="true" required>
+                <input type="text" class="form-control" data-ng-model="quiz.questions[currentPage-1].answer[$index]" ng-maxlength="70" maxlength="90" ng-trim="true" required>
                 <span class="input-group-btn">
                     <button tooltip="Remove answer {{$index+1}}" tooltip-placement="left" ng-click="delAnswerByIndex($index)" class="btn btn-danger" type="button"><span class="glyphicon glyphicon-remove"></span></button>
                 </span>

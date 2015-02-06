@@ -1,9 +1,59 @@
 'use strict';
 
+angular.module('quizzes').controller('ModalInstanceCtrl', ['$scope', '$modalInstance', '$location',
+	function ($scope, $modalInstance, $location) {
+
+		$scope.ok = function () {
+			$modalInstance.close();
+		};
+
+		$scope.cancel = function () {
+			$modalInstance.dismiss('cancel');
+		};
+
+		$scope.remove = function( quiz ) {
+			console.log('remove called');
+			console.log(quiz);
+			if ( quiz ) { quiz.$remove();
+
+				for (var i in $scope.quizzes ) {
+					if ($scope.quizzes [i] === quiz ) {
+						$scope.quizzes.splice(i, 1);
+					}
+				}
+			} else {
+				$scope.quiz.$remove(function() {
+					$location.path('quizzes');
+					$scope.ok();
+				});
+			}
+		};
+
+	}
+]);
+
 // Quizzes controller
-angular.module('quizzes').controller('QuizzesController', ['$scope', '$stateParams', '$location', '$sce', 'Authentication', 'Quizzes',
-	function($scope, $stateParams, $location, $sce, Authentication, Quizzes, Question ) {
+angular.module('quizzes').controller('QuizzesController', ['$scope', '$stateParams', '$location', '$sce', '$modal', 'Authentication', 'Quizzes',
+	function($scope, $stateParams, $location, $sce, $modal, Authentication, Quizzes, Question) {
 		$scope.authentication = Authentication;
+		console.log($modal);
+		console.log($location);
+		$scope.open = function (size) {
+
+			var modalInstance = $modal.open({
+				templateUrl: '/modules/quizzes/views/delete-modal.html',
+				controller: 'ModalInstanceCtrl',
+				scope: $scope,
+				size: size,
+				resolve: {
+					quiz: function(){
+						return $scope.quiz;
+					}
+				}
+			});
+		};
+
+
 		// Create new Quiz
 		$scope.create = function() {
 			// Create new Quiz object
