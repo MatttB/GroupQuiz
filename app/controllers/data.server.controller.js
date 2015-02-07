@@ -26,16 +26,11 @@ var generateSummary = function(originalQuestions, answeredQuestions, dateStarted
         questions: new Array(originalQuestions.length)//reserve memory for array, faster than .push();
     };
     answeredQuestions.forEach(function(answeredQuestion, index){
-        console.log(answeredQuestion);
 
         var originalQuestion = returnOriginalQuestion(originalQuestions, answeredQuestion);
-        console.log('logging OG question');
-        console.log(originalQuestion);
 
         var workOutPoints = function(){
             console.log('working out points');
-            console.log(originalQuestion[0].answer[0].toLowerCase());
-            console.log(answeredQuestion);
 
             var toLower = function(stringValue){//checks if is a string before calling toLower because it can be null and would error
                 if(typeof stringValue === 'string'){
@@ -86,12 +81,15 @@ var generateSummary = function(originalQuestions, answeredQuestions, dateStarted
     return summary;
 };
 
-exports.generateSessionSummary = function(req, res){
+exports.generateSessionSummary = function(req, res, session){
     console.log('generating session summary');
-    console.log('req2:', req.quiz.questions);
     if(req.action === 'endSession'){
         console.log('req.action === endSession');
-        console.log(req.quiz.users[req.user._id].session.doneQuestions);
-        req.summary = generateSummary(req.quiz.questions, req.quiz.users[req.user._id].session.doneQuestions, req.quiz.users[req.user._id].session.dateStarted);
+        req.summary = generateSummary(req.quiz.questions, session.doneQuestions, session.dateStarted);
     }
+};
+
+exports.generateAnsweredQuizSummary = function(req, res){
+    //TODO
+    return;
 };

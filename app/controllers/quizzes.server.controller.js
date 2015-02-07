@@ -108,6 +108,8 @@ exports.list = function(req, res) { Quiz.find().sort('-created').populate('user'
 				message: errorHandler.getErrorMessage(err)
 			});
 		} else {
+			console.log(quizzes);
+			console.log('quizzes ended');
 			res.jsonp(quizzes);
 		}
 	});

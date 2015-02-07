@@ -82,8 +82,12 @@ var UserSchema = new Schema({
 		type: Date,
 		default: Date.now
 	},
-	quizzes:{
+	completedQuizzes:{
 		type: Array
+	},
+	session:{
+		type: Object,
+		default: {}
 	},
 	/* For reset password */
 	resetPasswordToken: {
