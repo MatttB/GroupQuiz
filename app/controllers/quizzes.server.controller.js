@@ -122,7 +122,7 @@ exports.quizByID = function(req, res, next, id) { Quiz.findById(id).populate('us
 		console.log('quiz by id');
 		if (err) return next(err);
 		if (! quiz) return next(new Error('Failed to load Quiz ' + id));
-		req.quiz = quiz ;
+		req.quiz = quiz;
 		next();
 	});
 };

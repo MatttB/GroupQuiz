@@ -3,6 +3,7 @@
 module.exports = function(app) {
 	var users = require('../../app/controllers/users');
 	var quizzes = require('../../app/controllers/quizzes');
+	var data = require('../../app/controllers/data');
 
 	// Quizzes Routes
 	app.route('/quizzes')
@@ -10,7 +11,7 @@ module.exports = function(app) {
 		.post(users.requiresLogin, quizzes.create);
 
 	app.route('/quizzes/:quizId')
-		.get(quizzes.read)
+		.get(data.generateAnsweredQuizSummary)
 		.put(users.requiresLogin, quizzes.hasAuthorization, quizzes.update)
 		.delete(users.requiresLogin, quizzes.hasAuthorization, quizzes.delete);
 

@@ -39,7 +39,7 @@ var respondWithQuestion = function(res, question){
  * Handling /play:id
  */
 
-exports.handleGetResponse = function(req, res, next){
+exports.handleGetResponse = function(req, res){
     console.log('REQ ENDED');
 
     var newSession = function(){//constructor function, though using object literal as it does not contain methods
@@ -192,9 +192,7 @@ exports.respond = function(req, res){
 
 exports.handleData = function(req, res, next){
     var
-        user = req.user,
-        session = req.user.session,
-        quiz = req.quiz;
+        session = req.user.session;
 
     //extract answer info and move question to doneQuestions
     session.questions[0].userAnswer = req.body.userAnswer;
@@ -240,10 +238,11 @@ exports.respondToPost = function(req, res, next){
     next();
 };
 
-exports.updateDB = function(req, res){
+exports.updateDB = function(req){
     console.log('afterRes db update');
-    var quiz = req.quiz;
-    var conditions,
+    var quiz = req.quiz,
+        user = req.user,
+        conditions,
         update,
         options,
         session = req.user.session;
@@ -258,6 +257,7 @@ exports.updateDB = function(req, res){
     var errorCallback = function(err, doc){
         if(err){
             console.log(errorHandler.getErrorMessage(err));
+            console.log('with', doc);
         }
     };
 
@@ -283,17 +283,51 @@ exports.updateDB = function(req, res){
         console.log('updating USER');
         User.update(conditions, update, options, errorCallback);
         //
-        //update quiz collection
-        //Setting up model Quiz.update() parameters;
-        conditions = {'_id': mongoose.Types.ObjectId(quiz._id)};
 
-        update = {
-            $push:{
-
+        //merging doneQuestions array objects' attributes with sessionSummary array object
+        for(var i = 0; i < session.doneQuestions.length; i++) {
+            for (var attributeName in req.summary.questions[i]) {
+                console.log(attributeName);
+                session.doneQuestions[i][attributeName] = req.summary.questions[i][attributeName];
             }
+        }
+        console.log(session.doneQuestions);
+
+        delete req.summary.questions;
+
+        session = {
+            dateStarted: session.dateStarted,
+            doneQuestions: session.doneQuestions,
+            sessionSummary: req.summary
         };
 
-        update.$push['users.' + req.user._id + '.completedQuizSessions'] = session;
+        //
+        //updating quiz collection
+        //Setting up model Quiz.update() parameters;
+        conditions = {'_id': mongoose.Types.ObjectId(quiz._id)};
+        if(quiz.users[user._id]) {
+            update = {
+                $push: {}
+            };
+            update.$push['users.' + req.user._id + '.completedQuizSessions'] = session;
+        }
+        else{//user does not exist in quizzes collection
+            update = {
+                $set: {}
+            };
+            update.$set['users.' + req.user._id] = {
+                completedQuizSessions: [
+                    session
+                ],
+                details: {
+                    firstName: user.firstName,
+                    lastName: user.lastName,
+                    displayName: user.displayname,
+                    username: user.username,
+                    email: user.email
+                }
+            };
+        }
 
         //options stays the same
         console.log('Updating QUIZ');
