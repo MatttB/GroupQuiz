@@ -41,8 +41,7 @@ var generateSummary = function(originalQuestions, answeredQuestions, dateStarted
                 }
             };
 
-            summary.maxPoints = summary.maxPoints + originalQuestion[0].pointsAwarded;
-
+            summary.maxPoints += originalQuestion[0].pointsAwarded;
             if (originalQuestion[0].answer[0] === answeredQuestion.userAnswer){
                 summary.nCorrect ++;
                 summary.nPoints = summary.nPoints + originalQuestion[0].pointsAwarded;
@@ -111,8 +110,19 @@ exports.generateAnsweredQuizSummary = function(req, res){
         questionsCollection: []
     };
 
+    //initialise temp vars for question collection data
+    var questions = {};
+    for(var i = 0; i < quiz.questions.length; i++){
+        questions[quiz.questions[i].questionId] = {
+            title: quiz.questions[i].title,
+            avgTTA: 0,//initialised at 0, so that we can increment it and then divide by the number of attempts to get an average
+            avgFirstAttemptPercentage: 0,//still needs to be divided by (pointsAwarded * totalAttempts)
+            avgLastAttemptPercentage: 0,//still needs to be divided by (pointsAwarded * totalAttempts)
+            pointsAwarded: quiz.questions[i].pointsAwarded//same reason
+        };
+    }
+
     for(var user in users){//iterate through each user in users object
-        console.log('aUser');
         if(users.hasOwnProperty(user)) {
             user = users[user];
 
@@ -129,28 +139,43 @@ exports.generateAnsweredQuizSummary = function(req, res){
 
             returnData.summaryStats.totalAttempts += newUserRow.nAttempts;//dealing with total attempts summary data
 
-            var userSessionNumber = 0;
-            for (var attempt in user.completedQuizSessions) {//iterate through attempts of user
+            var sessions = user.completedQuizSessions;
+            for (var userSessionNumber = 0; userSessionNumber < sessions.length; userSessionNumber++) {//iterate through attempts of user array
+                var session = sessions[userSessionNumber];
 
-                attempt = user.completedQuizSessions[attempt];
-                userSessionNumber++;
-                newUserRow.timeSpent += attempt.sessionSummary.timeElapsed;
+                newUserRow.timeSpent += session.sessionSummary.timeElapsed;//sessions[userSessionNumber]
 
                 //Deal with sessionPercentage vars
-                attempt.sessionPercentage = calcPercentage(attempt.sessionSummary.nPoints, attempt.sessionSummary.maxPoints);
-                console.log(attempt.sessionPercentage,'sessionPercentage^');
+                session.sessionPercentage = calcPercentage(session.sessionSummary.nPoints, session.sessionSummary.maxPoints);
+                console.log(sessions[userSessionNumber].sessionPercentage,'sessionPercentage^');
 
-                if (attempt.sessionPercentage > newUserRow.bestPercentage) {
-                    newUserRow.bestPercentage = attempt.sessionPercentage;
-                    newUserRow.bestSessionTTA = attempt.sessionSummary.averageTTA;
+                if (sessions[userSessionNumber].sessionPercentage > newUserRow.bestPercentage || newUserRow.bestPercentage === undefined) {
+                    newUserRow.bestPercentage = session.sessionPercentage;
+                    newUserRow.bestSessionTTA = session.sessionSummary.averageTTA;
                 }
 
-                if (attempt.sessionPercentage < newUserRow.worstPercentage) {
-                    newUserRow.worstPercentage = attempt.sessionPercentage;
-                    newUserRow.worstSessionTTA = attempt.sessionSummary.averageTTA;
+                if (session.sessionPercentage < newUserRow.worstPercentage || newUserRow.worstPercentage === undefined) {
+                    newUserRow.worstPercentage = session.sessionPercentage;
+                    newUserRow.worstSessionTTA = session.sessionSummary.averageTTA;
                 }
-                newUserRow.avgPercentage += attempt.sessionPercentage;//it's not yet an avg percentage (just a sum of percentages thus far)
-                newUserRow.timeSpent += attempt.sessionSummary.timeElapsed;
+                newUserRow.avgPercentage += session.sessionPercentage;//it's not yet an avg percentage (just a sum of percentages thus far)
+                newUserRow.timeSpent += session.sessionSummary.timeElapsed;
+
+                //iterate through questions for question statistics
+                for(var qNumber = 0; qNumber < session.doneQuestions.length; qNumber++){
+                    var question = session.doneQuestions[qNumber];
+                    var questionStats = questions[question.questionId];
+
+                    questionStats.avgTTA += question.timeElapsed;//still needs to be divided by totalAttempts
+                    questionStats.title = question.title;
+
+                    if(userSessionNumber === 0){
+                        questionStats.avgFirstAttemptPercentage += question.points;//still needs to be divided by (pointsAwarded * totalAttempts)
+                    }
+                    if((userSessionNumber + 1) === sessions.length){
+                        questionStats.avgLastAttemptPercentage += question.points;
+                    }
+                }
 
                 //push a session to sessionsCollection
                 returnData.sessionsCollection.push({
@@ -158,12 +183,16 @@ exports.generateAnsweredQuizSummary = function(req, res){
                     lastName: newUserRow.lastName,
                     username: newUserRow.username,
                     attemptNumber: userSessionNumber,
-                    attemptPercentage: attempt.sessionPercentage,
-                    attemptLength: attempt.sessionSummary.timeElapsed
+                    attemptPercentage: sessions[userSessionNumber].sessionPercentage,
+                    attemptLength: sessions[userSessionNumber].sessionSummary.timeElapsed
                 });
                 //
-
             }
+
+            var firstSession = sessions[0],
+                lastSession = sessions[sessions.length - 1];
+
+
             newUserRow.avgPercentage = newUserRow.avgPercentage / user.completedQuizSessions.length;
             //sessionPercentage vars dealt with
 
@@ -174,6 +203,22 @@ exports.generateAnsweredQuizSummary = function(req, res){
             returnData.usersCollection.push(newUserRow);
         }
     }
+
+    console.log(questions);
+    console.log(quiz.questions.length);
+
+    for(var index = 0; index < quiz.questions.length; index++){//question is the questionId
+        questions[quiz.questions[index].questionId].avgFirstAttemptPercentage = 100 * (questions[quiz.questions[index].questionId].avgFirstAttemptPercentage / (quiz.questions[index].pointsAwarded * returnData.summaryStats.totalAttempts));
+        questions[quiz.questions[index].questionId].avgLastAttemptPercentage = 100 * (questions[quiz.questions[index].questionId].avgLastAttemptPercentage / (quiz.questions[index].pointsAwarded * returnData.summaryStats.totalAttempts));
+        questions[quiz.questions[index].questionId].avgTTA /= returnData.summaryStats.totalAttempts;
+        console.log('question:');
+        console.log(questions[quiz.questions[index].questionId]);
+        returnData.questionsCollection.push(questions[quiz.questions[index].questionId]);
+
+    }
+
+    console.log(returnData.questionsCollection);
+
     console.log(returnData);
     res.jsonp({//I had to respond via object literal rather than req.quiz because for some reason I couldn't add an attribute (generatedData) to req.quiz and return it properly...
         _id: quiz._id,
