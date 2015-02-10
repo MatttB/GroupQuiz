@@ -23,12 +23,22 @@
 			<span data-ng-bind="quiz.summary[0].displayName"></span>
 		</em>
 	</small>
-	<br>
-	{{quiz.generatedData.summaryStats}}
 	<br><br>
-	{{quiz.generatedData.usersCollection}}
-	<br><br>
-	{{quiz.generatedData.sessionsCollection}}
-	<br><br>
-	{{quiz.generatedData.questionsCollection}}
+
+	<div ng-show="quiz.generatedData.usersCollection.length > 0">
+		<i>
+			<h3 ng-show="quiz.generatedData.usersCollection.length > 1">
+				The {{quiz.generatedData.usersCollection.length}} users
+				have taken the quiz {{quiz.generatedData.summaryStats.totalAttempts}} times collectively,
+				taking them {{quiz.generatedData.summaryStats.totalTimeSpent | msToHuman}}.
+			</h3>
+			<h3 ng-show="quiz.generatedData.usersCollection.length === 1">
+				One user has taken the quiz spending {{quiz.generatedData.summaryStats.totalTime}}.
+			</h3>
+		</i>
+		<tables></tables>
+	</div>
+	<h3 ng-show="quiz.generatedData.usersCollection.length === 0">
+		No users have taken the quiz :(
+	</h3>
 </section>

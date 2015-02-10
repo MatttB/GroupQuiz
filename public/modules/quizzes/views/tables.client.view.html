@@ -1,0 +1,93 @@
+<section data-ng-controller="TablesController">
+
+	<table st-table="usersTable" st-safe-src="quiz.generatedData.usersCollection" class="table table-striped">
+		<thead>
+		<h3>Users</h3>
+		<tr>
+			<th st-sort="lastName" st-skip-natural="true">Name</th>
+			<th st-sort="nAttempts" st-skip-natural="true">Tries</th>
+			<th st-sort="timeSpent" st-skip-natural="true">Time spent</th>
+			<th st-sort="avgPercentage" st-skip-natural="true" st-sort-default="reverse">Avg. &#37;</th>
+			<th st-sort="bestPercentage" st-skip-natural="true">Best attempt &amp avg. question time</th>
+			<th st-sort="worstPercentage" st-skip-natural="true">Worst attempt &amp avg. question time</th>
+		</tr>
+		<tr>
+			<th>
+				<input tablesearch st-delay="100" st-search placeholder="Filter users" class="input-sm form-control" type="search"/>
+			</th>
+		</tr>
+		</thead>
+		<tbody>
+		<tr ng-repeat="row in usersTable">
+			<td>{{row.firstName}} {{row.lastName}}</td>
+			<td>{{row.nAttempts | number}}</td>
+			<td>{{row.timeSpent | msToHuman}}</td>
+			<td>{{row.avgPercentage | number:1}}&#37;</td>
+			<td>{{row.bestPercentage | number:1}}&#37; @ {{row.bestSessionTTA | msToHuman}}/q</td>
+			<td>{{row.worstPercentage | number:1}}&#37; @ {{row.worstSessionTTA | msToHuman}}/q</td>
+		</tr>
+		</tbody>
+		<tfoot>
+		</tfoot>
+	</table>
+
+	<table st-table="questionsTable" st-safe-src="quiz.generatedData.questionsCollection" class="table table-striped">
+		<thead>
+		<h3>Questions</h3>
+		<tr>
+			<th st-sort="title" st-skip-natural="true">Question title</th>
+			<th st-sort="pointsAwarded" st-skip-natural="true">Points</th>
+			<th st-sort="avgTTA" st-skip-natural="true">Avg. time to answer</th>
+			<th st-sort="avgFirstAttemptPercentage" st-skip-natural="true">First attempt &#37; correct</th>
+			<th st-sort="avgLastAttemptPercentage" st-skip-natural="true" st-sort-default="reverse">Last attempt &#37; correct</th>
+		</tr>
+		<tr>
+			<th>
+				<input tablesearch st-search placeholder="Filter questions" class="input-sm form-control" type="search"/>
+			</th>
+		</tr>
+		</thead>
+		<tbody>
+		<tr ng-repeat="row in questionsTable">
+			<td>{{row.title}}</td>
+			<td>{{row.pointsAwarded}}</td>
+			<td>{{row.avgTTA | msToHuman}}</td>
+			<td>{{row.avgFirstAttemptPercentage | number:1}}&#37;</td>
+			<td>{{row.avgLastAttemptPercentage | number:1}}&#37;</td>
+		</tr>
+		</tbody>
+		<tfoot>
+		</tfoot>
+	</table>
+
+	<table st-table="sessionsTable" st-safe-src="quiz.generatedData.sessionsCollection" class="table table-striped">
+		<thead>
+		<h3>Attempts</h3>
+		<tr>
+			<th st-sort="lastName" st-skip-natural="true">Name</th>
+			<th st-sort="attemptNumber" st-skip-natural="true">Attempt number</th>
+			<th st-sort="attemptPercentage" st-skip-natural="true" st-sort-default="reverse">Attempt &#37;</th>
+			<th st-sort="attemptLength" st-skip-natural="true">Attempt length</th>
+		</tr>
+		<tr>
+			<th>
+
+			</th>
+
+			<input tablesearch st-search placeholder="Filter attempts" class="input-sm form-control" type="search"/>
+		</tr>
+		</thead>
+		<tbody>
+		<tr ng-repeat="row in sessionsTable">
+			<td>{{row.firstName}} {{row.lastName}}</td>
+			<td>{{row.attemptNumber + 1 | number}}</td>
+			<td>{{row.attemptPercentage | number:1}}&#37;</td>
+			<td>{{row.attemptLength | msToHuman}}</td>
+		</tr>
+		</tbody>
+		<tfoot>
+		</tfoot>
+	</table>
+
+
+</section>

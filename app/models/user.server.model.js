@@ -87,7 +87,7 @@ var UserSchema = new Schema({
 	},
 	session:{
 		type: Object,
-		default: {}
+		default: false
 	},
 	/* For reset password */
 	resetPasswordToken: {

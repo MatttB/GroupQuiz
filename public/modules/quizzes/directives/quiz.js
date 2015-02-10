@@ -91,4 +91,12 @@
             controllerAs: 'tab'
         };
     });
+
+    app.directive('tables', function(){
+       return{
+           restrict: 'E',
+           templateUrl: '/modules/quizzes/views/tables.client.view.html'
+       };
+    });
+
 })();

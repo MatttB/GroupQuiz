@@ -16,6 +16,7 @@ module.exports = {
 				'public/lib/bootstrap/dist/css/bootstrap.css',
 				'public/lib/bootstrap/dist/css/bootstrap-theme.css',
 				'public/modules/quizzes/css/main.css',
+				'public/modules/quizzes/css/tables.css',
 				'http://fonts.googleapis.com/css?family=Roboto'
 			],
 			js: [
@@ -27,7 +28,9 @@ module.exports = {
 				'public/lib/angular-sanitize/angular-sanitize.js',
 				'public/lib/angular-ui-router/release/angular-ui-router.js',
 				'public/lib/angular-ui-utils/ui-utils.js',
-				'public/lib/angular-bootstrap/ui-bootstrap-tpls.js'
+				'public/lib/angular-bootstrap/ui-bootstrap-tpls.js',
+				'public/lib/smart-table/smart-table.min.js',
+				'public/lib/moment/moment.min.js'
 			]
 		},
 		css: [

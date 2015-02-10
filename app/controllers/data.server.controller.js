@@ -116,8 +116,8 @@ exports.generateAnsweredQuizSummary = function(req, res){
         questions[quiz.questions[i].questionId] = {
             title: quiz.questions[i].title,
             avgTTA: 0,//initialised at 0, so that we can increment it and then divide by the number of attempts to get an average
-            avgFirstAttemptPercentage: 0,//still needs to be divided by (pointsAwarded * totalAttempts)
-            avgLastAttemptPercentage: 0,//still needs to be divided by (pointsAwarded * totalAttempts)
+            avgFirstAttemptPercentage: 0,//still needs to be divided by (pointsAwarded * returnData.usersCollection.length)
+            avgLastAttemptPercentage: 0,//still needs to be divided by (pointsAwarded * returnData.usersCollection.length)
             pointsAwarded: quiz.questions[i].pointsAwarded//same reason
         };
     }
@@ -170,7 +170,7 @@ exports.generateAnsweredQuizSummary = function(req, res){
                     questionStats.title = question.title;
 
                     if(userSessionNumber === 0){
-                        questionStats.avgFirstAttemptPercentage += question.points;//still needs to be divided by (pointsAwarded * totalAttempts)
+                        questionStats.avgFirstAttemptPercentage += question.points;//still needs to be divided by (pointsAwarded * returnData.usersCollection.length)
                     }
                     if((userSessionNumber + 1) === sessions.length){
                         questionStats.avgLastAttemptPercentage += question.points;
@@ -208,8 +208,8 @@ exports.generateAnsweredQuizSummary = function(req, res){
     console.log(quiz.questions.length);
 
     for(var index = 0; index < quiz.questions.length; index++){//question is the questionId
-        questions[quiz.questions[index].questionId].avgFirstAttemptPercentage = 100 * (questions[quiz.questions[index].questionId].avgFirstAttemptPercentage / (quiz.questions[index].pointsAwarded * returnData.summaryStats.totalAttempts));
-        questions[quiz.questions[index].questionId].avgLastAttemptPercentage = 100 * (questions[quiz.questions[index].questionId].avgLastAttemptPercentage / (quiz.questions[index].pointsAwarded * returnData.summaryStats.totalAttempts));
+        questions[quiz.questions[index].questionId].avgFirstAttemptPercentage = 100 * (questions[quiz.questions[index].questionId].avgFirstAttemptPercentage / (quiz.questions[index].pointsAwarded * returnData.usersCollection.length));
+        questions[quiz.questions[index].questionId].avgLastAttemptPercentage = 100 * (questions[quiz.questions[index].questionId].avgLastAttemptPercentage / (quiz.questions[index].pointsAwarded * returnData.usersCollection.length));
         questions[quiz.questions[index].questionId].avgTTA /= returnData.summaryStats.totalAttempts;
         console.log('question:');
         console.log(questions[quiz.questions[index].questionId]);
