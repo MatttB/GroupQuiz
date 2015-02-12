@@ -94,7 +94,6 @@ exports.generateAnsweredQuizSummary = function(req, res){
     var
         quiz = req.quiz,
         users = req.quiz.users,
-        nQuestions = req.quiz.questions.length,
         calcPercentage = function(got, max){
             return (got/max)*100;
         };
@@ -121,6 +120,8 @@ exports.generateAnsweredQuizSummary = function(req, res){
             pointsAwarded: quiz.questions[i].pointsAwarded//same reason
         };
     }
+
+    console.log(users);
 
     for(var user in users){//iterate through each user in users object
         if(users.hasOwnProperty(user)) {
@@ -188,10 +189,6 @@ exports.generateAnsweredQuizSummary = function(req, res){
                 });
                 //
             }
-
-            var firstSession = sessions[0],
-                lastSession = sessions[sessions.length - 1];
-
 
             newUserRow.avgPercentage = newUserRow.avgPercentage / user.completedQuizSessions.length;
             //sessionPercentage vars dealt with

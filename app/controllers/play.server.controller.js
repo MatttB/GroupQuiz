@@ -39,6 +39,20 @@ var respondWithQuestion = function(res, question){
  * Handling /play:id
  */
 
+exports.checkSessionValidity = function(req, res, next){
+    console.log('checking validity');
+    console.log(req.quiz.summary[0].dateLastUpdated);
+    if(req.quiz.summary[0].dateLastUpdated > req.user.session.dateStarted){
+        console.log('invalid');
+        res.jsonp({'error': 'The quiz creator has updated the quiz so your quiz session must be restarted.'});
+        User.update({'_id':req.user._id},{$set:{session:false}},{},function(err){console.log(err);});
+    }
+    else{
+        console.log('valid');
+        return;
+    }
+};
+
 exports.handleGetResponse = function(req, res){
     console.log('REQ ENDED');
 
@@ -112,13 +126,14 @@ exports.handleGetResponse = function(req, res){
     if(req.user.session){//session exists
         if(user.session.quizId === quizIdFromUrl){//trying to access current session
             console.log('trying to access current session');
+            exports.checkSessionValidity(req, res);
             //returning current question
             respondWithQuestion(res, user.session.questions[0]);
         }
         else{
             //TODO...
             console.log('trying to access session when session from another quiz exists');
-            res.jsonp();
+            res.jsonp({'nextQuestion':'error', 'error': 'You are already doing a quiz', 'returnedId': user.session.quizId.toString()});
         }
     }
     else{//no session exists
@@ -191,6 +206,7 @@ exports.respond = function(req, res){
  */
 
 exports.handleData = function(req, res, next){
+    exports.checkSessionValidity(req, res);
     var
         session = req.user.session;
 

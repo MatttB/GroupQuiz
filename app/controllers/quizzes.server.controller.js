@@ -6,6 +6,7 @@
 var mongoose = require('mongoose'),
 	errorHandler = require('./errors'),
 	Quiz = mongoose.model('Quiz'),
+	User = mongoose.model('User'),
 	_ = require('lodash');
 
 /**
@@ -20,6 +21,7 @@ exports.create = function(req, res) {
 	quiz.summary = summary;
 	quiz.settings = {randomizeOrder: false};
 	quiz.questions = [{
+		questionId: mongoose.Types.ObjectId(),
 		title: '',
 		hint: '',
 		attemptsBeforeHint: -1,
@@ -33,7 +35,7 @@ exports.create = function(req, res) {
 		multipleChoiceValidity: false,
 		insert: true
 	}];
-	quiz.users = {'aUser':'lol'};
+	quiz.users = {};
 	console.log(quiz);
 
 	quiz.save(function(err) {
@@ -67,6 +69,7 @@ exports.update = function(req, res) {
 			question.questionId = mongoose.Types.ObjectId();
 		}
 	});
+	quiz.summary[0].dateLastUpdated = Date.now();
 
 	quiz.save(function(err) {
 		if (err) {
@@ -78,11 +81,10 @@ exports.update = function(req, res) {
 			res.jsonp(quiz);
 		}
 	});
-	console.log(quiz.settings);
 };
 
 /**
- * Delete an Quiz
+ * Delete a Quiz
  */
 exports.delete = function(req, res) {
 	var quiz = req.quiz ;
@@ -96,6 +98,14 @@ exports.delete = function(req, res) {
 			res.jsonp(quiz);
 		}
 	});
+
+	//also update users
+	console.log('deleting', req.quiz._id);
+	var query = {'session.quizId': req.quiz._id.toString()},
+		update = {$set: {session: false}},
+		options = {multi:true};
+
+	User.update(query, update, options, function(err){console.log('ERR',err);});
 };
 
 /**

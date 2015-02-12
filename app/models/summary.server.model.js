@@ -108,6 +108,10 @@ var SummarySchema = new Schema({
 	tags: {
 		type: Array,
 		default: []
+	},
+	dateLastUpdated: {
+		type: Number,
+		default: Date.now()
 	}
 });
 
