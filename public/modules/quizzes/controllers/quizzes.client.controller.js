@@ -222,7 +222,7 @@ angular.module('quizzes').controller('QuizzesController', ['$scope', '$statePara
 				}
 				console.log(older);
 				for (var i = 0; i < older.length; i++) {//for each question in older
-					if ((older[i].title !== newer[i].title) || (older[i].hint !== newer[i].hint || older[i].ignoreCapitalisation !== newer[i].ignoreCapitalisation)) {
+					if ((older[i].title !== newer[i].title) || (older[i].hint !== newer[i].hint || older[i].ignoreCapitalisation !== newer[i].ignoreCapitalisation || older[i].questionImage !== newer[i].questionImage)) {
 						changed(i + 1);
 						return;
 					}
@@ -498,6 +498,7 @@ angular.module('quizzes').controller('QuizzesController', ['$scope', '$statePara
 				$scope.quiz.questions[i].pointsAwarded = $scope.questionValues.pointsAwarded;
 				$scope.quiz.questions[i].attemptsBeforeHint = $scope.questionValues.attemptsBeforeHint;
 			}
+			$scope.update(false);
 		};
 
 		$scope.setAllQuestionTypes = function(qType){

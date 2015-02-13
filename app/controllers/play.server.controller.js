@@ -17,6 +17,7 @@ var mongoose = require('mongoose'),
 
 var pruneQuestion = function(question){
     console.log('pruning question');
+    console.log(question.questionImage);
     return{
         title: question.title,
         hint: question.hint,
@@ -27,7 +28,9 @@ var pruneQuestion = function(question){
         qNumber: question.qNumber,
         answers: question.answers,
         dateStarted: question.dateStarted,
-        pointsAwardedFeedback: question.pointsAwardedFeedback
+        pointsAwardedFeedback: question.pointsAwardedFeedback,
+        progress: 100 * ((question.qNumber - 1) / (question.nQuestions)),
+        questionImage: question.questionImage
     };
 };
 
@@ -44,7 +47,7 @@ exports.checkSessionValidity = function(req, res, next){
     console.log(req.quiz.summary[0].dateLastUpdated);
     if(req.quiz.summary[0].dateLastUpdated > req.user.session.dateStarted){
         console.log('invalid');
-        res.jsonp({'error': 'The quiz creator has updated the quiz so your quiz session must be restarted.'});
+        res.jsonp({'nextQuestion': 'error','error': 'The quiz creator has updated the quiz so your quiz session must be restarted.'});
         User.update({'_id':req.user._id},{$set:{session:false}},{},function(err){console.log(err);});
     }
     else{
@@ -75,7 +78,8 @@ exports.handleGetResponse = function(req, res){
                 'questionType': question.questionType,
                 'pointsAwarded': question.pointsAwarded,
                 'nQuestions': nQuestions,
-                'correctAnswer': question.answer[0]//REMOVE BEFORE RESPONDING
+                'correctAnswer': question.answer[0],//REMOVE BEFORE RESPONDING
+                'allCorrectAnswers': question.answer
             };
             if(req.quiz.users[req.user._id]){//if it defined... ie. does the user exist in the quiz coll yet?
                 if(req.quiz.users[req.user._id].completedQuizSessions.length >= question.attemptsBeforeHint ){//nSessions >= nNeededForHint???
@@ -133,7 +137,7 @@ exports.handleGetResponse = function(req, res){
         else{
             //TODO...
             console.log('trying to access session when session from another quiz exists');
-            res.jsonp({'nextQuestion':'error', 'error': 'You are already doing a quiz', 'returnedId': user.session.quizId.toString()});
+            res.jsonp({'nextQuestion':'error', 'error': 'You are already doing a quiz at', 'returnedId': user.session.quizId.toString()});
         }
     }
     else{//no session exists
@@ -242,7 +246,8 @@ exports.respondToPost = function(req, res, next){
     if(req.action === 'endSession'){
         //setting up return summary...TEMP for now
         res.jsonp({
-            nextQuestion: req.summary
+            nextQuestion: req.summary,
+            questionImage: ''
         });
     }
     else{//session still in progress

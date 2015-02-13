@@ -1,11 +1,29 @@
 <section data-ng-controller="PlayController" data-ng-init="findOne()">
     <div class="page-header">
         <h1>Play Quiz</h1>
-        <p>
-            {{question}}
-        </p>
+        <div class="progress progress-striped active">
+            <div class="progress-bar progress-bar-info" role="progressbar"
+                 aria-valuenow="question.progress" aria-valuemin="5" aria-valuemax="100"
+                 style="width:{{question.progress}}%;">
+            </div>
+        </div>
+    </div>
 
-        <input type="text" ng-model="question.userAnswer">
-        <button class="btn btn-default" ng-click="submitAnswer()" type="button">Submit</button>
+    <div ng-if="responded">
+        <div collapse="!error" class="alert alert-warning" role="warning">
+            <strong ng-show="error" data-ng-bind="error"></strong>
+            <a href="{{linkToQuiz}}">{{linkToQuiz}}</a>
+        </div>
+
+        <question-play ng-hide="questionLoading"></question-play>
+        <img ng-show="questionLoading" alt="Loading..." class="text-center" src="modules/quizzes/img/loading.gif"/>
+
+    </div>
+    <div ng-if="!responded">
+        <p>
+        Failed to load quiz.
+        Either the quiz does not exist or connection is slow.
+        Choose a valid quiz from <a href="/#!/quizzes">here</a>.
+        </p>
     </div>
 </section>

@@ -41,15 +41,29 @@ var generateSummary = function(originalQuestions, answeredQuestions, dateStarted
                 }
             };
 
+            //take supplied answer, array of correct answers, and boolean of whether to check capitalisation or not
+            var matchInAnswerArray = function(answer, answers, checkCapitalisation){
+                if(checkCapitalisation){
+                    return (answers.indexOf(answer) !== -1);//true if there was a match, false if there was not
+                }
+                else if(!checkCapitalisation){
+                    for(var i = 0; i < answers.length; i++){
+                        if(toLower(answers[i]) === toLower(answer)){//standardise both answers
+                            return true;//match
+                        }
+                    }
+                    return false;//did not find it in array.
+                }
+                else{//shouldn't happen but mark wrong if error
+                    return false;
+                }
+            };
+
             summary.maxPoints += originalQuestion[0].pointsAwarded;
-            if (originalQuestion[0].answer[0] === answeredQuestion.userAnswer){
+
+            if(matchInAnswerArray(answeredQuestion.userAnswer, originalQuestion[0].answer, originalQuestion[0].ignoreCapitalisation)){
                 summary.nCorrect ++;
-                summary.nPoints = summary.nPoints + originalQuestion[0].pointsAwarded;
-                return originalQuestion[0].pointsAwarded;
-            }
-            else if(originalQuestion[0].ignoreCapitalisation && (toLower(answeredQuestion.userAnswer) === originalQuestion[0].answer[0].toLowerCase())){
-                summary.nCorrect ++;
-                summary.nPoints = summary.nPoints + originalQuestion[0].pointsAwarded;
+                summary.nPoints += originalQuestion[0].pointsAwarded;
                 return originalQuestion[0].pointsAwarded;
             }
             else{
@@ -166,16 +180,24 @@ exports.generateAnsweredQuizSummary = function(req, res){
                 for(var qNumber = 0; qNumber < session.doneQuestions.length; qNumber++){
                     var question = session.doneQuestions[qNumber];
                     var questionStats = questions[question.questionId];
+                    console.log(question.questionId);
+                    if(questionStats) {
+                        questionStats.avgTTA += question.timeElapsed;//still needs to be divided by totalAttempts
+                        questionStats.title = question.title;
 
-                    questionStats.avgTTA += question.timeElapsed;//still needs to be divided by totalAttempts
-                    questionStats.title = question.title;
+                        if(userSessionNumber === 0){
+                            questionStats.avgFirstAttemptPercentage += question.points;//still needs to be divided by (pointsAwarded * returnData.usersCollection.length)
+                        }
+                        if((userSessionNumber + 1) === sessions.length){
+                            questionStats.avgLastAttemptPercentage += question.points;
+                        }
+                    }
+                    else{//question doesn't exist anymore???
+                        console.log('question was removed.');//TODO
+                        session.doneQuestions.splice(qNumber);
+                    }
 
-                    if(userSessionNumber === 0){
-                        questionStats.avgFirstAttemptPercentage += question.points;//still needs to be divided by (pointsAwarded * returnData.usersCollection.length)
-                    }
-                    if((userSessionNumber + 1) === sessions.length){
-                        questionStats.avgLastAttemptPercentage += question.points;
-                    }
+
                 }
 
                 //push a session to sessionsCollection

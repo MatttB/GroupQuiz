@@ -38,10 +38,10 @@
         };
     });
 
-    app.directive('question', function() {
+    app.directive('questionEdit', function() {
         return {
             restrict: 'E',
-            templateUrl: '/modules/quizzes/views/question.html'
+            templateUrl: '/modules/quizzes/views/question-edit.html'
         };
     });
 
