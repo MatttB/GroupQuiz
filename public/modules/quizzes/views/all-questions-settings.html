@@ -69,6 +69,8 @@
                     </div>
                 </div>
             </div>
+            <input type="checkbox" ng-model="questionValues.sortOptionsAlphabetically" class="ng-valid ng-dirty">
+            Sort answers alphabetically? <span tooltip="Should multiple choice options be sorted alphabetically when users take the quiz?" class="glyphicon glyphicon-info-sign"></span>
             <button class="btn btn-primary" ng-click="applyAllQuestionDataValues()">Apply Values</button>
             <div collapse="!allQuestionsValuesError" class="alert alert-warning" role="alert">
                 <strong ng-show="allQuestionsValuesError" data-ng-bind="allQuestionsValuesError"></strong>

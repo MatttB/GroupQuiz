@@ -30,7 +30,8 @@
 			<h3 ng-show="quiz.generatedData.usersCollection.length > 1">
 				The {{quiz.generatedData.usersCollection.length}} users
 				have taken the quiz {{quiz.generatedData.summaryStats.totalAttempts}} times collectively,
-				taking them {{quiz.generatedData.summaryStats.totalTimeSpent | msToHuman}}.
+				taking them {{quiz.generatedData.summaryStats.totalTimeSpent | msToHuman}},
+				averaging {{(quiz.generatedData.summaryStats.totalTimeSpent / quiz.generatedData.summaryStats.totalAttempts) | msToHuman}} per attempt.
 			</h3>
 			<h3 ng-show="quiz.generatedData.usersCollection.length === 1">
 				One user has taken the quiz spending {{quiz.generatedData.summaryStats.totalTimeSpent | msToHuman}}.

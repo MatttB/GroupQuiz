@@ -13,14 +13,11 @@ angular.module('play').controller('PlayController', ['$scope', '$stateParams', '
 			//callback after question data received
 			$scope.questionLoading = false;
 			$scope.responded = true;
-
 			console.log($scope.question);
-			console.log($scope.question.questionImage);
-			console.log();
 
 			if($scope.question.error){
 				$scope.error = $scope.question.error;
-				console.log($scope.question);
+
 				if($scope.question.returnedId){
 					$scope.linkToQuiz = '/#!/play/' + $scope.question.returnedId;
 				}
@@ -28,14 +25,11 @@ angular.module('play').controller('PlayController', ['$scope', '$stateParams', '
 		};
 
 		var findOneCallback = function(){
-			console.log('called back');
+
 			setTimeout(function(){
 				if(!$scope.question){
-					console.log(' no question');
+
 					$scope.responded = false;
-				}
-				else{
-					console.log('question');
 				}
 			}, 5000);
 		};
@@ -49,9 +43,8 @@ angular.module('play').controller('PlayController', ['$scope', '$stateParams', '
 		};
 
 		$scope.submitAnswer = function(){
-			console.log($scope.question.userAnswer);
 			var callback = function(res){
-				console.log(res.nextQuestion);
+
 				if(res.nextQuestion === 'error'){
 					$scope.error = res.error;
 				}

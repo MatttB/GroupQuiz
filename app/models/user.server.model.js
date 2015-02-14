@@ -8,14 +8,14 @@ var mongoose = require('mongoose'),
 	crypto = require('crypto');
 
 /**
- * A Validation function for local strategy properties
+ * A Validation function for local user
  */
 var validateLocalStrategyProperty = function(property) {
 	return ((this.provider !== 'local' && !this.updated) || property.length);
 };
 
 /**
- * A Validation function for local strategy password
+ * A Validation function for local user password
  */
 var validateLocalStrategyPassword = function(password) {
 	return (this.provider !== 'local' || (password && password.length > 6));

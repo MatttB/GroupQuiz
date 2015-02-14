@@ -5,6 +5,5 @@ angular.module('quizzes').controller('TablesController', ['$scope', '$filter',
 		// Tables controller logic
 		// ...
 		$scope.itemsByPage=10;
-
 	}
 ]);

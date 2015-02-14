@@ -3,71 +3,69 @@
  */
 'use strict';
 
-var generateSummary = function(originalQuestions, answeredQuestions, dateStarted){
+var generateSummary = function(originalQuestions, answeredQuestions, dateStarted) {
     //takes array of original questions (req.quiz.questions)
     //  and array of user's doneQuestions
 
-    var returnOriginalQuestion = function(originalQuestions, answeredQuestion){
+    var returnOriginalQuestion = function(originalQuestions, answeredQuestion) {
         //takes a full session and all of the questions from the original quiz,
-        return originalQuestions.filter(function(originalQuestion){
-                return originalQuestion.questionId.toString() === answeredQuestion.questionId.toString();
-            }
-        );
+        return originalQuestions.filter(function(originalQuestion) {
+            return originalQuestion.questionId.toString() === answeredQuestion.questionId.toString();
+        });
         //returns the original question that matches the edited question
     };
 
-    var summary = {//initalise summary
-        timeElapsed: 0,//worked out by lastQuestion dateAnswered - dateStarted;
-        averageTTA: 0,//worked out by summary.timeElapsed / (summary.nCorrect + summary.nWrong)
-        nCorrect: 0,//incremented on iteration of answeredQuestions array
-        nWrong: 0,//incremented on iteration of answeredQuestions array
+    var summary = { //initalise summary
+        timeElapsed: 0, //worked out by lastQuestion dateAnswered - dateStarted;
+        averageTTA: 0, //worked out by summary.timeElapsed / (summary.nCorrect + summary.nWrong)
+        nCorrect: 0, //incremented on iteration of answeredQuestions array
+        nWrong: 0, //incremented on iteration of answeredQuestions array
         maxPoints: 0,
         nPoints: 0,
-        questions: new Array(originalQuestions.length)//reserve memory for array, faster than .push();
+        questions: new Array(originalQuestions.length) //reserve memory for array, faster than .push();
     };
-    answeredQuestions.forEach(function(answeredQuestion, index){
+    answeredQuestions.forEach(function(answeredQuestion, index) {
 
         var originalQuestion = returnOriginalQuestion(originalQuestions, answeredQuestion);
 
-        var workOutPoints = function(){
-            console.log('working out points');
+        var workOutPoints = function() {
 
-            var toLower = function(stringValue){//checks if is a string before calling toLower because it can be null and would error
-                if(typeof stringValue === 'string'){
+            var toLower = function(stringValue) { //checks if is a string before calling toLower because it can be null and would error
+                if (typeof stringValue === 'string') {
                     return stringValue.toLowerCase();
                 }
-                else{
+                else {
                     return stringValue;
                 }
             };
 
             //take supplied answer, array of correct answers, and boolean of whether to check capitalisation or not
-            var matchInAnswerArray = function(answer, answers, checkCapitalisation){
-                if(checkCapitalisation){
-                    return (answers.indexOf(answer) !== -1);//true if there was a match, false if there was not
+            var matchInAnswerArray = function(answer, answers, checkCapitalisation) {
+                if (checkCapitalisation) {
+                    return (answers.indexOf(answer) !== -1); //true if there was a match, false if there was not
                 }
-                else if(!checkCapitalisation){
-                    for(var i = 0; i < answers.length; i++){
-                        if(toLower(answers[i]) === toLower(answer)){//standardise both answers
-                            return true;//match
+                else if (!checkCapitalisation) {
+                    for (var i = 0; i < answers.length; i++) {
+                        if (toLower(answers[i]) === toLower(answer)) { //standardise both answers
+                            return true; //match
                         }
                     }
-                    return false;//did not find it in array.
+                    return false; //did not find it in array.
                 }
-                else{//shouldn't happen but mark wrong if error
+                else { //shouldn't happen but mark wrong if error
                     return false;
                 }
             };
 
             summary.maxPoints += originalQuestion[0].pointsAwarded;
 
-            if(matchInAnswerArray(answeredQuestion.userAnswer, originalQuestion[0].answer, originalQuestion[0].ignoreCapitalisation)){
-                summary.nCorrect ++;
+            if (matchInAnswerArray(answeredQuestion.userAnswer, originalQuestion[0].answer, originalQuestion[0].ignoreCapitalisation)) {
+                summary.nCorrect++;
                 summary.nPoints += originalQuestion[0].pointsAwarded;
                 return originalQuestion[0].pointsAwarded;
             }
-            else{
-                summary.nWrong ++;
+            else {
+                summary.nWrong++;
                 return 0;
             }
         };
@@ -75,41 +73,38 @@ var generateSummary = function(originalQuestions, answeredQuestions, dateStarted
         summary.questions[index] = {
             title: originalQuestion[0].title,
             questionImage: originalQuestion[0].questionImage,
-            points: workOutPoints()//also increments nWrong or nCorrect
+            points: workOutPoints() //also increments nWrong or nCorrect
         };
 
         //add time elapsed to question summary
-        if(index !== 0) {
+        if (index !== 0) {
             summary.questions[index].timeElapsed = answeredQuestion.dateAnswered - answeredQuestions[index - 1].dateAnswered;
-            console.log(answeredQuestion.dateAnswered - answeredQuestions[index - 1].dateAnswered);
         }
-        else{
+        else {
             summary.questions[0].timeElapsed = answeredQuestion.dateAnswered - dateStarted;
         }
     });
 
     summary.timeElapsed = (answeredQuestions[answeredQuestions.length - 1].dateAnswered - dateStarted);
-    summary.averageTTA = (summary.timeElapsed/(summary.nCorrect + summary.nWrong));
+    summary.averageTTA = (summary.timeElapsed / (summary.nCorrect + summary.nWrong));
 
     return summary;
 };
 
-exports.generateSessionSummary = function(req, res, session){
-    console.log('generating session summary');
-    if(req.action === 'endSession'){
-        console.log('req.action === endSession');
+exports.generateSessionSummary = function(req, res, session) {
+    if (req.action === 'endSession') {
         req.summary = generateSummary(req.quiz.questions, session.doneQuestions, session.dateStarted);
     }
 };
 
-exports.generateAnsweredQuizSummary = function(req, res){
+exports.generateAnsweredQuizSummary = function(req, res) {
     //TODO
     //initialise variables
     var
         quiz = req.quiz,
         users = req.quiz.users,
-        calcPercentage = function(got, max){
-            return (got/max)*100;
+        calcPercentage = function(got, max) {
+            return (got / max) * 100;
         };
 
     //collections for tables
@@ -125,23 +120,22 @@ exports.generateAnsweredQuizSummary = function(req, res){
 
     //initialise temp vars for question collection data
     var questions = {};
-    for(var i = 0; i < quiz.questions.length; i++){
+    for (var i = 0; i < quiz.questions.length; i++) {
         questions[quiz.questions[i].questionId] = {
             title: quiz.questions[i].title,
-            avgTTA: 0,//initialised at 0, so that we can increment it and then divide by the number of attempts to get an average
-            avgFirstAttemptPercentage: 0,//still needs to be divided by (pointsAwarded * returnData.usersCollection.length)
-            avgLastAttemptPercentage: 0,//still needs to be divided by (pointsAwarded * returnData.usersCollection.length)
-            pointsAwarded: quiz.questions[i].pointsAwarded//same reason
+            avgTTA: 0, //initialised at 0, so that we can increment it and then divide by the number of attempts to get an average
+            avgFirstAttemptPercentage: 0, //still needs to be divided by (pointsAwarded * returnData.usersCollection.length)
+            avgPercentage: 0,//still needs to be divided by (pointsAwarded * totalAttempts)
+            avgLastAttemptPercentage: 0, //still needs to be divided by (pointsAwarded * returnData.usersCollection.length)
+            pointsAwarded: quiz.questions[i].pointsAwarded //same reason
         };
     }
 
-    console.log(users);
 
-    for(var user in users){//iterate through each user in users object
-        if(users.hasOwnProperty(user)) {
+    for (var user in users) { //iterate through each user in users object
+        if (users.hasOwnProperty(user)) {
             user = users[user];
 
-            console.log(user);
 
             var newUserRow = {
                 firstName: user.details.firstName,
@@ -152,17 +146,16 @@ exports.generateAnsweredQuizSummary = function(req, res){
                 avgPercentage: 0
             };
 
-            returnData.summaryStats.totalAttempts += newUserRow.nAttempts;//dealing with total attempts summary data
+            returnData.summaryStats.totalAttempts += newUserRow.nAttempts; //dealing with total attempts summary data
 
             var sessions = user.completedQuizSessions;
-            for (var userSessionNumber = 0; userSessionNumber < sessions.length; userSessionNumber++) {//iterate through attempts of user array
+            for (var userSessionNumber = 0; userSessionNumber < sessions.length; userSessionNumber++) { //iterate through attempts of user array
                 var session = sessions[userSessionNumber];
 
-                newUserRow.timeSpent += session.sessionSummary.timeElapsed;//sessions[userSessionNumber]
+                newUserRow.timeSpent += session.sessionSummary.timeElapsed; //sessions[userSessionNumber]
 
                 //Deal with sessionPercentage vars
                 session.sessionPercentage = calcPercentage(session.sessionSummary.nPoints, session.sessionSummary.maxPoints);
-                console.log(sessions[userSessionNumber].sessionPercentage,'sessionPercentage^');
 
                 if (sessions[userSessionNumber].sessionPercentage > newUserRow.bestPercentage || newUserRow.bestPercentage === undefined) {
                     newUserRow.bestPercentage = session.sessionPercentage;
@@ -173,27 +166,29 @@ exports.generateAnsweredQuizSummary = function(req, res){
                     newUserRow.worstPercentage = session.sessionPercentage;
                     newUserRow.worstSessionTTA = session.sessionSummary.averageTTA;
                 }
-                newUserRow.avgPercentage += session.sessionPercentage;//it's not yet an avg percentage (just a sum of percentages thus far)
+                newUserRow.avgPercentage += session.sessionPercentage; //it's not yet an avg percentage (just a sum of percentages thus far)
                 newUserRow.timeSpent += session.sessionSummary.timeElapsed;
 
                 //iterate through questions for question statistics
-                for(var qNumber = 0; qNumber < session.doneQuestions.length; qNumber++){
+                for (var qNumber = 0; qNumber < session.doneQuestions.length; qNumber++) {
                     var question = session.doneQuestions[qNumber];
                     var questionStats = questions[question.questionId];
-                    console.log(question.questionId);
-                    if(questionStats) {
-                        questionStats.avgTTA += question.timeElapsed;//still needs to be divided by totalAttempts
+
+                    if (questionStats) {
+                        questionStats.avgTTA += question.timeElapsed; //still needs to be divided by totalAttempts
                         questionStats.title = question.title;
 
-                        if(userSessionNumber === 0){
-                            questionStats.avgFirstAttemptPercentage += question.points;//still needs to be divided by (pointsAwarded * returnData.usersCollection.length)
+                        questionStats.avgPercentage += question.points;
+
+                        if (userSessionNumber === 0) {
+                            questionStats.avgFirstAttemptPercentage += question.points; //still needs to be divided by (pointsAwarded * returnData.usersCollection.length)
                         }
-                        if((userSessionNumber + 1) === sessions.length){
+                        if ((userSessionNumber + 1) === sessions.length) {
                             questionStats.avgLastAttemptPercentage += question.points;
                         }
                     }
-                    else{//question doesn't exist anymore???
-                        console.log('question was removed.');//TODO
+                    else { //question doesn't exist anymore???
+                        // TODO
                         session.doneQuestions.splice(qNumber);
                     }
 
@@ -223,23 +218,17 @@ exports.generateAnsweredQuizSummary = function(req, res){
         }
     }
 
-    console.log(questions);
-    console.log(quiz.questions.length);
 
-    for(var index = 0; index < quiz.questions.length; index++){//question is the questionId
+    for (var index = 0; index < quiz.questions.length; index++) { //question is the questionId
         questions[quiz.questions[index].questionId].avgFirstAttemptPercentage = 100 * (questions[quiz.questions[index].questionId].avgFirstAttemptPercentage / (quiz.questions[index].pointsAwarded * returnData.usersCollection.length));
+        questions[quiz.questions[index].questionId].avgPercentage = 100 * (questions[quiz.questions[index].questionId].avgPercentage / returnData.summaryStats.totalAttempts);
         questions[quiz.questions[index].questionId].avgLastAttemptPercentage = 100 * (questions[quiz.questions[index].questionId].avgLastAttemptPercentage / (quiz.questions[index].pointsAwarded * returnData.usersCollection.length));
         questions[quiz.questions[index].questionId].avgTTA /= returnData.summaryStats.totalAttempts;
-        console.log('question:');
-        console.log(questions[quiz.questions[index].questionId]);
         returnData.questionsCollection.push(questions[quiz.questions[index].questionId]);
 
     }
 
-    console.log(returnData.questionsCollection);
-
-    console.log(returnData);
-    res.jsonp({//I had to respond via object literal rather than req.quiz because for some reason I couldn't add an attribute (generatedData) to req.quiz and return it properly...
+    res.jsonp({ //I had to respond via object literal rather than req.quiz because for some reason I couldn't add an attribute (generatedData) to req.quiz and return it properly...
         _id: quiz._id,
         __v: quiz.__v,
         settings: quiz.settings,
@@ -249,26 +238,3 @@ exports.generateAnsweredQuizSummary = function(req, res){
         generatedData: returnData
     });
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

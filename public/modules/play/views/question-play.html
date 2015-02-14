@@ -12,13 +12,13 @@
             {{question.userAnswer.substring(50)}}
         </b></p></h4>
         <div class="row">
-            <div ng-repeat="answer in question.answers">
+            <div ng-repeat="answer in question.answers track by $index">
                 <div class="col-sm-6 col-lg-3">
                     <label class="btn btn-primary" style="width:100%; height:80%" ng-model="question.userAnswer" btn-radio="answer" uncheckable><br>{{answer.substring(0,36)}}<br>{{answer.substring(36)}}<br></label>
                 </div>
             </div>
         </div>
-        <button class="btn btn-default" ng-click="submitAnswer()" type="button" style="width:100%;">Submit Answer</button>
+        <button class="btn btn-default" ng-click="submitAnswer()" type="button" style="width:100%;"><br>Submit Answer<br><br></button>
     </div>
 
     <!-- Text input -->
@@ -28,7 +28,7 @@
             {{question.userAnswer.substring(50)}}
         </b></p></h4>
         <input type="text" data-ng-model="question.userAnswer" id="userAnswer" class="form-control" ng-maxlength="140" maxlength="140" placeholder="Input your answer here" ng-trim="true">
-        <button class="btn btn-default" ng-click="submitAnswer()" type="button" style="width:100%;">Submit Answer</button>
+        <button class="btn btn-default" ng-click="submitAnswer()" type="button" style="width:100%;"><br>Submit Answer<br><br></button>
     </div>
 
     <!-- Session Summary -->

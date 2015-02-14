@@ -20,6 +20,7 @@ exports.create = function(req, res) {
 	summary.displayName = req.user.displayName;
 	quiz.summary = summary;
 	quiz.settings = {randomizeOrder: false};
+
 	quiz.questions = [{
 		questionId: mongoose.Types.ObjectId(),
 		title: '',
@@ -33,7 +34,8 @@ exports.create = function(req, res) {
 		questionType: 'Text Input',
 		questionImage: '',
 		multipleChoiceValidity: false,
-		insert: true
+		insert: true,
+		sortOptionsAlphabetically: false
 	}];
 	quiz.users = {};
 	console.log(quiz);
@@ -43,7 +45,8 @@ exports.create = function(req, res) {
 			return res.status(400).send({
 				message: errorHandler.getErrorMessage(err)
 			});
-		} else {
+		}
+		else {
 			res.jsonp(quiz);
 		}
 	});
@@ -76,7 +79,8 @@ exports.update = function(req, res) {
 			return res.status(400).send({
 				message: errorHandler.getErrorMessage(err)
 			});
-		} else {
+		}
+		else {
 			delete quiz.questions[0].insert;
 			res.jsonp(quiz);
 		}
@@ -94,7 +98,8 @@ exports.delete = function(req, res) {
 			return res.status(400).send({
 				message: errorHandler.getErrorMessage(err)
 			});
-		} else {
+		}
+		else {
 			res.jsonp(quiz);
 		}
 	});
@@ -117,8 +122,8 @@ exports.list = function(req, res) { Quiz.find().sort('-created').populate('user'
 			return res.status(400).send({
 				message: errorHandler.getErrorMessage(err)
 			});
-		} else {
-			console.log(quizzes);
+		}
+	else {
 			console.log('quizzes ended');
 			res.jsonp(quizzes);
 		}

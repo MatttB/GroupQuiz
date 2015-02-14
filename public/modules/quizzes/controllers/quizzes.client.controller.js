@@ -12,8 +12,6 @@ angular.module('quizzes').controller('ModalInstanceCtrl', ['$scope', '$modalInst
 		};
 
 		$scope.remove = function( quiz ) {
-			console.log('remove called');
-			console.log(quiz);
 			if ( quiz ) { quiz.$remove();
 
 				for (var i in $scope.quizzes ) {
@@ -36,8 +34,6 @@ angular.module('quizzes').controller('ModalInstanceCtrl', ['$scope', '$modalInst
 angular.module('quizzes').controller('QuizzesController', ['$scope', '$stateParams', '$location', '$sce', '$modal', 'Authentication', 'Quizzes',
 	function($scope, $stateParams, $location, $sce, $modal, Authentication, Quizzes, Question) {
 		$scope.authentication = Authentication;
-		console.log($modal);
-		console.log($location);
 		$scope.open = function (size) {
 
 			var modalInstance = $modal.open({
@@ -220,7 +216,6 @@ angular.module('quizzes').controller('QuizzesController', ['$scope', '$statePara
 					change = true;
 					return;
 				}
-				console.log(older);
 				for (var i = 0; i < older.length; i++) {//for each question in older
 					if ((older[i].title !== newer[i].title) || (older[i].hint !== newer[i].hint || older[i].ignoreCapitalisation !== newer[i].ignoreCapitalisation || older[i].questionImage !== newer[i].questionImage)) {
 						changed(i + 1);
@@ -259,17 +254,15 @@ angular.module('quizzes').controller('QuizzesController', ['$scope', '$statePara
 				quiz.summary[0].quizImage = 'https://' + quiz.summary[0].quizImage;//add protocol
 			}
 			if(change) {//check if quiz has changed
-				//console.log(JSON.parse(JSON.stringify(quiz)));
-				//quizComparator = (JSON.parse(JSON.stringify(quiz)));//makes a copy of the quiz for checking if quiz has changed later
+
 				quizComparator = quiz.questions;
-				console.log('updating quiz...');
+
 				quiz.$update(function () {
 					$location.path('quizzes/' + quiz._id + '/edit');
-					console.log(quizComparator);
+
 					$scope.error = undefined;
 					$scope.loading = false;
 				}, function (errorResponse) {
-					console.log(quiz.questions);
 					$scope.error = errorResponse.data.message;
 					$scope.loading = false;
 				});
@@ -350,10 +343,10 @@ angular.module('quizzes').controller('QuizzesController', ['$scope', '$statePara
 		$scope.validImgurUrl = false;
 
 		$scope.validateImgurUrl = function(imgurUrl){
-			console.log('image validation:..');
+
 			var imgurPattern = /^(i.)?imgur\.com\/[a-zA-Z0-9]{5,8}\.(?:jpe?g|gif|png)/;
 			if(imgurPattern.test(imgurUrl)){//if valid without protocol
-				console.log('valid without protocol');
+
 				$scope.quiz.summary[0].quizImage = 'https://' + imgurUrl;//add protocol
 				$scope.validImgurUrl = true;
 				return $scope.quiz.summary[0].quizImage;
@@ -361,8 +354,6 @@ angular.module('quizzes').controller('QuizzesController', ['$scope', '$statePara
 			else{
 				imgurPattern = /^https?:\/\/(i.)?imgur\.com\/[a-zA-Z0-9]{5,8}\.(?:jpe?g|gif|png)$/;
 				if(imgurPattern.test(imgurUrl)){
-					console.log('valid WITH protocol');
-					console.log(imgurUrl);
 					$scope.validImgurUrl = true;
 					return imgurUrl;
 				}
@@ -374,17 +365,15 @@ angular.module('quizzes').controller('QuizzesController', ['$scope', '$statePara
 		$scope.validYoutubeUrl = false;
 
 		$scope.validateYoutubeUrl = function(youtubeUrl){
-			console.log('yt validation:..');
 			if(youtubeUrl.substring(0,4) !== 'http'){
 				youtubeUrl = 'https://' + youtubeUrl;
 			}
 			var youtubePattern = /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/;
 			//https://www.youtube.com/watch?v=be-LbSaEzZQ&list=RDHCXXF0DFZWayA
 			if(youtubePattern.test(youtubeUrl)){
-				console.log('YT valid WITH protocol');
-				console.log(youtubeUrl);
+
 				$scope.validYoutubeUrl = true;
-				console.log(youtubeUrl.match(youtubePattern));
+
 				var matchInfo = youtubeUrl.match(youtubePattern);
 				var indexOfVideoId = matchInfo[0].indexOf(matchInfo[1]);
 				$scope.quiz.summary[0].youtubeEmbedUrl = 'https://www.youtube.com/embed/' + matchInfo[0].substring(indexOfVideoId,indexOfVideoId+11) + '?' + matchInfo[0].substring(indexOfVideoId+12);
@@ -409,7 +398,6 @@ angular.module('quizzes').controller('QuizzesController', ['$scope', '$statePara
 		};
 
 		$scope.typeaheadCallback = function(){
-			console.log('called');
 			for(var i = 0; i < $scope.quiz.questions.length; i++){
 				if($scope.quiz.questions[i].title === $scope.selected){
 					$scope.currentPage = i + 1;
@@ -423,10 +411,8 @@ angular.module('quizzes').controller('QuizzesController', ['$scope', '$statePara
 		$scope.validQuestionImgurUrl = false;
 
 		$scope.validateQuestionImgurUrl = function(imgurUrl){
-			console.log('question image validation:..');
 			var imgurPattern = /^(i.)?imgur\.com\/[a-zA-Z0-9]{5,8}\.(?:jpe?g|gif|png)/;
 			if(imgurPattern.test(imgurUrl)){//if valid without protocol
-				console.log('valid without protocol');
 				$scope.quiz.questions[$scope.currentPage-1].questionImage = 'https://' + imgurUrl;//add protocol
 				$scope.validQuestionImgurUrl = true;
 				return $scope.quiz.summary[0].quizImage;
@@ -434,8 +420,7 @@ angular.module('quizzes').controller('QuizzesController', ['$scope', '$statePara
 			else{
 				imgurPattern = /^https?:\/\/(i.)?imgur\.com\/[a-zA-Z0-9]{5,8}\.(?:jpe?g|gif|png)$/;
 				if(imgurPattern.test(imgurUrl)){
-					console.log('valid WITH protocol');
-					console.log(imgurUrl);
+
 					$scope.validQuestionImgurUrl = true;
 					return imgurUrl;
 				}
@@ -497,12 +482,12 @@ angular.module('quizzes').controller('QuizzesController', ['$scope', '$statePara
 				$scope.quiz.questions[i].timeLimit = $scope.questionValues.timeLimit;
 				$scope.quiz.questions[i].pointsAwarded = $scope.questionValues.pointsAwarded;
 				$scope.quiz.questions[i].attemptsBeforeHint = $scope.questionValues.attemptsBeforeHint;
+				$scope.quiz.questions[i].sortOptionsAlphabetically = $scope.questionValues.sortOptionsAlphabetically;
 			}
 			$scope.update(false);
 		};
 
 		$scope.setAllQuestionTypes = function(qType){
-			console.log('setAllQTypes func called');
 			var i;//declare my iterator for my for loops
 			if(qType === 'Text Input'){
 				for(i = 0; i < $scope.quiz.questions.length; i++){
@@ -514,11 +499,9 @@ angular.module('quizzes').controller('QuizzesController', ['$scope', '$statePara
 				var notQualified = [];
 				for(i = 0; i < $scope.quiz.questions.length; i++){
 					if($scope.quiz.questions[i].multipleChoiceValidity){
-						console.log('Should be multiple choice');
 						$scope.quiz.questions[i].questionType = 'Multiple Choice';
 					}
 					else{
-						console.log('Should be text input');
 						$scope.quiz.questions[i].questionType = 'Text Input';
 						notQualified.push((i+1).toString());
 					}
@@ -545,8 +528,6 @@ angular.module('quizzes').controller('QuizzesController', ['$scope', '$statePara
 				else{
 					$scope.allQuestionsValuesError = false;
 				}
-				console.log('ALl Questions Values Error:');
-				console.log($scope.allQuestionsValuesError);
 			}
 
 		};

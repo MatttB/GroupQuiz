@@ -24,6 +24,11 @@
                     </span>
                 </div>
             </div>
+            <input type="checkbox" ng-model="quiz.questions[currentPage-1].sortOptionsAlphabetically" class="ng-valid ng-dirty">
+            Sort answers alphabetically? <span tooltip-html-unsafe="<p>
+                                                                    <li>Should multiple choice options be sorted alphabetically when users take the quiz?</li>
+                                                                    <li>This setting can be overridden for every question in settings</li>
+                                                                </p>" class="glyphicon glyphicon-info-sign"></span>
         </div>
     </div>
 </section>

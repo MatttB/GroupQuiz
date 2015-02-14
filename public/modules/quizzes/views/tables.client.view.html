@@ -38,8 +38,9 @@
 			<th st-sort="title" st-skip-natural="true">Question title</th>
 			<th st-sort="pointsAwarded" st-skip-natural="true">Points</th>
 			<th st-sort="avgTTA" st-skip-natural="true">Avg. time to answer</th>
-			<th st-sort="avgFirstAttemptPercentage" st-skip-natural="true">First attempt &#37; correct</th>
-			<th st-sort="avgLastAttemptPercentage" st-skip-natural="true" st-sort-default="reverse">Last attempt &#37; correct</th>
+			<th st-sort="avgFirstAttemptPercentage" st-skip-natural="true">First attempt &#37;</th>
+			<th st-sort="avgPercentage" st-skip-natural="true" st-sort-default="reverse">Avg. &#37;</th>
+			<th st-sort="avgLastAttemptPercentage" st-skip-natural="true">Last attempt &#37;</th>
 		</tr>
 		<tr>
 			<th>
@@ -53,6 +54,7 @@
 			<td>{{row.pointsAwarded}}</td>
 			<td>{{row.avgTTA | msToHuman}}</td>
 			<td>{{row.avgFirstAttemptPercentage | number:1}}&#37;</td>
+			<td>{{row.avgPercentage | number:1}}&#37;</td>
 			<td>{{row.avgLastAttemptPercentage | number:1}}&#37;</td>
 		</tr>
 		</tbody>
