@@ -2,12 +2,12 @@
 	<div class="page-header">
 		<h1 data-ng-bind="quiz.summary[0].name"></h1>
 	</div>
-	<div class="pull-right" data-ng-show="authentication.user._ud !== quiz.summary[0].user">
+	<div class="pull-right">
 		<a class="btn btn-primary" href="/#!/play/{{quiz._id}}">
 			Play Quiz
 		</a>
 	</div>
-	<div class="pull-right" data-ng-show="authentication.user._id == quiz.summary[0].user">
+	<div class="pull-right" data-ng-show="authentication.user._id === quiz.summary[0].user">
 		<a class="btn btn-primary" href="/#!/quizzes/{{quiz._id}}/edit">
 			<i class="glyphicon glyphicon-edit"></i>
 		</a>
@@ -37,7 +37,7 @@
 				One user has taken the quiz spending {{quiz.generatedData.summaryStats.totalTimeSpent | msToHuman}}.
 			</h3>
 		</i>
-		<tables></tables>
+		<tables data-ng-show="authentication.user._id === quiz.summary[0].user || authentication.user.username === 'lemattb'"></tables>
 	</div>
 	<h3 ng-show="quiz.generatedData.usersCollection.length === 0">
 		No users have taken the quiz :(

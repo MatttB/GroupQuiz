@@ -22,6 +22,26 @@ angular.module('play').controller('PlayController', ['$scope', '$stateParams', '
 					$scope.linkToQuiz = '/#!/play/' + $scope.question.returnedId;
 				}
 			}
+
+			$scope.question.displayAnswers = new Array($scope.question.answers.length);//initialise array, faster than push's;
+			for(var i = 0; i < $scope.question.answers.length; i++){
+				var answerLines = [];
+				var wordsInAnswer = $scope.question.answers[i].split(' ');
+				for(var index = 0; index < wordsInAnswer.length; index++){
+					if( (wordsInAnswer[index] + answerLines[answerLines.length - 1]).length > 36 || wordsInAnswer[index].length > 36) {
+						answerLines.push(wordsInAnswer[index]);
+					}
+					else if(!answerLines[answerLines.length -1]){
+						answerLines.push(wordsInAnswer[index]);
+					}
+					else{
+						//
+						answerLines[answerLines.length - 1] = '' + answerLines[answerLines.length - 1] + ' ' + wordsInAnswer[index];
+					}
+				}
+				$scope.question.displayAnswers[i] = answerLines;
+			}
+
 		};
 
 		var findOneCallback = function(){
