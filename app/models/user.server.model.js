@@ -150,4 +150,4 @@ UserSchema.statics.findUniqueUsername = function(username, suffix, callback) {
 	});
 };
 
-mongoose.model('User', UserSchema);
+mongoose.model('User', UserSchema);//EXPORT MODEL

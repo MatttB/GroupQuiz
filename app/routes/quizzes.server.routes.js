@@ -1,7 +1,7 @@
 'use strict';
 
-module.exports = function(app) {
-	var users = require('../../app/controllers/users');
+module.exports = function(app) {//export the handlers
+	var users = require('../../app/controllers/users');//import other files for use.
 	var quizzes = require('../../app/controllers/quizzes');
 	var data = require('../../app/controllers/data');
 

@@ -40,7 +40,7 @@ var validateImgurUrl = function(imgurUrl){
 		 starts with http, 's' is optional, then must have '://', 'i.' is optional, must have 'imgur.com/',
 		 then must have 5-8 alphanumeric characters in a row, then '.', then either 'jpg' (or 'jpeg'), 'gif', or 'png', and these must be at the end.
 		 */
-		return (pattern.test(imgurUrl));
+		return (pattern.test(imgurUrl));//test provided imgurUrl against the matching pattern. returns boolean true/false
 	}
 	else{
 		return true;
@@ -51,7 +51,7 @@ var validateYoutubeUrl = function(youtubeUrl){
 	console.log(youtubeUrl);
 	if(youtubeUrl !== ''){
 		var p = /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/;
-		return (youtubeUrl.match(p)) ? true : false;
+		return (youtubeUrl.match(p)) ? true : false;//test youtube url against the matching pattern. returns boolean true/false
 	}
 	else{
 		return true;
@@ -59,9 +59,9 @@ var validateYoutubeUrl = function(youtubeUrl){
 };
 
 /**
- * Questions Schema
+ * Summary Schema
  */
-var SummarySchema = new Schema({
+var SummarySchema = new Schema({//defining the schema of the summary of the quiz
 	name: {
 		type: String,
 		default: '',
@@ -118,4 +118,4 @@ var SummarySchema = new Schema({
 /**
 var QuestionsSchema = mongoose.model('Summary', SummarySchema);
 **/
-module.exports = SummarySchema;
+module.exports = SummarySchema;//export MODEL

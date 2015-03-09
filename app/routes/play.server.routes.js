@@ -3,8 +3,8 @@
  */
 'use strict';
 
-module.exports = function(app) {
-    var users = require('../../app/controllers/users');
+module.exports = function(app) {//export the handlers.
+    var users = require('../../app/controllers/users');//import other files for use.
     var quizzes = require('../../app/controllers/quizzes');
     var play = require('../../app/controllers/play');
 
@@ -16,7 +16,6 @@ module.exports = function(app) {
 
     app.route('/play/:quizId')
         .get(users.userByID, play.handleGetResponse)
-        //.get(users.requiresLogin, play.workOutAction, play.performAction)
         .post(users.userByID, play.handleData, play.respondToPost, play.updateDB);
     //check if logged in, work out actions, create session or return current session
 

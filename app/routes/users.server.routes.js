@@ -3,11 +3,11 @@
 /**
  * Module dependencies.
  */
-var passport = require('passport');
+var passport = require('passport');//importing passport module
 
-module.exports = function(app) {
+module.exports = function(app) {//export the handlers.
 	// User Routes
-	var users = require('../../app/controllers/users');
+	var users = require('../../app/controllers/users');//import the user handlers
 
 	// Setting up Quizzing application routes
 

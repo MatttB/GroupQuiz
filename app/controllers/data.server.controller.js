@@ -28,7 +28,7 @@ var generateSummary = function(originalQuestions, answeredQuestions, dateStarted
 
         var originalQuestion = returnOriginalQuestion(originalQuestions, answeredQuestion);
 
-        var workOutPoints = function() {
+        var workOutPoints = function() {//defining function to be used later.
 
             var toLower = function(stringValue) { //checks if is a string before calling toLower because it can be null and would error
                 if (typeof stringValue === 'string') {
@@ -45,7 +45,7 @@ var generateSummary = function(originalQuestions, answeredQuestions, dateStarted
                     return (answers.indexOf(answer) !== -1); //true if there was a match, false if there was not
                 }
                 else if (!checkCapitalisation) {
-                    for (var i = 0; i < answers.length; i++) {
+                    for (var i = 0; i < answers.length; i++) {//iterate through each answer in answers array.
                         if (toLower(answers[i]) === toLower(answer)) { //standardise both answers
                             return true; //match
                         }
@@ -57,48 +57,47 @@ var generateSummary = function(originalQuestions, answeredQuestions, dateStarted
                 }
             };
 
-            summary.maxPoints += originalQuestion[0].pointsAwarded;
+            summary.maxPoints += originalQuestion[0].pointsAwarded;//increment max points by pointsAwarded value in originalquestion
 
-            if (matchInAnswerArray(answeredQuestion.userAnswer, originalQuestion[0].answer, originalQuestion[0].ignoreCapitalisation)) {
-                summary.nCorrect++;
-                summary.nPoints += originalQuestion[0].pointsAwarded;
-                return originalQuestion[0].pointsAwarded;
+            if (matchInAnswerArray(answeredQuestion.userAnswer, originalQuestion[0].answer, originalQuestion[0].ignoreCapitalisation)) {//if there's a match in answer array
+                summary.nCorrect++;//increment nCorrect by 1
+                summary.nPoints += originalQuestion[0].pointsAwarded;//increment nPoints by points awarded.
+                return originalQuestion[0].pointsAwarded;//return the first question points awarded.
             }
             else {
-                summary.nWrong++;
+                summary.nWrong++;//increment nWrong by 1
                 return 0;
             }
         };
 
-        summary.questions[index] = {
-            title: originalQuestion[0].title,
-            questionImage: originalQuestion[0].questionImage,
-            points: workOutPoints() //also increments nWrong or nCorrect
+        summary.questions[index] = {//define question at index by object literal
+            title: originalQuestion[0].title,//set title from original question
+            questionImage: originalQuestion[0].questionImage,//same with image
+            points: workOutPoints() //also increments nWrong or nCorrect, as well as sets points via return value.
         };
 
         //add time elapsed to question summary
-        if (index !== 0) {
-            summary.questions[index].timeElapsed = answeredQuestion.dateAnswered - answeredQuestions[index - 1].dateAnswered;
+        if (index !== 0) {//if not first element
+            summary.questions[index].timeElapsed = answeredQuestion.dateAnswered - answeredQuestions[index - 1].dateAnswered;//assign time elapsed to current time minus time answered last question
         }
-        else {
-            summary.questions[0].timeElapsed = answeredQuestion.dateAnswered - dateStarted;
+        else {//otherwise separate handler because there is no previous question date for the first one. Uses dateStarted.
+            summary.questions[0].timeElapsed = answeredQuestion.dateAnswered - dateStarted;//substract dateStarted from current time. assign to time elapsed.
         }
     });
 
-    summary.timeElapsed = (answeredQuestions[answeredQuestions.length - 1].dateAnswered - dateStarted);
-    summary.averageTTA = (summary.timeElapsed / (summary.nCorrect + summary.nWrong));
+    summary.timeElapsed = (answeredQuestions[answeredQuestions.length - 1].dateAnswered - dateStarted);//total quiz time elapsed is date answered last question minus date started.
+    summary.averageTTA = (summary.timeElapsed / (summary.nCorrect + summary.nWrong));//calculate the average time to answer each question.
 
     return summary;
 };
 
-exports.generateSessionSummary = function(req, res, session) {
+exports.generateSessionSummary = function(req, res, session) {//called by middleware, calls subsequent generateSummary varaible defined above.
     if (req.action === 'endSession') {
         req.summary = generateSummary(req.quiz.questions, session.doneQuestions, session.dateStarted);
     }
 };
 
 exports.generateAnsweredQuizSummary = function(req, res) {
-    //TODO
     //initialise variables
     var
         quiz = req.quiz,
@@ -109,13 +108,13 @@ exports.generateAnsweredQuizSummary = function(req, res) {
 
     //collections for tables
     var returnData = {
-        summaryStats: {
+        summaryStats: {//summary sentence vars
             totalAttempts: 0,
             totalTimeSpent: 0
         },
-        usersCollection: [],
-        sessionsCollection: [],
-        questionsCollection: []
+        usersCollection: [],//users table
+        sessionsCollection: [],//sessions table
+        questionsCollection: []//questions table
     };
 
     //initialise temp vars for question collection data
@@ -133,11 +132,11 @@ exports.generateAnsweredQuizSummary = function(req, res) {
 
 
     for (var user in users) { //iterate through each user in users object
-        if (users.hasOwnProperty(user)) {
+        if (users.hasOwnProperty(user)) {//make sure we are not iterating through default properties of objects in JS.
             user = users[user];
 
 
-            var newUserRow = {
+            var newUserRow = {//initalise user row via object literal.
                 firstName: user.details.firstName,
                 lastName: user.details.lastName,
                 username: user.details.username,
@@ -155,23 +154,26 @@ exports.generateAnsweredQuizSummary = function(req, res) {
                 newUserRow.timeSpent += session.sessionSummary.timeElapsed; //sessions[userSessionNumber]
 
                 //Deal with sessionPercentage vars
-                session.sessionPercentage = calcPercentage(session.sessionSummary.nPoints, session.sessionSummary.maxPoints);
+                session.sessionPercentage = calcPercentage(session.sessionSummary.nPoints, session.sessionSummary.maxPoints);//calc percentage of points of session.
 
+
+                //if this percentage is bigger than previous best percentage (or first percentage)
                 if (sessions[userSessionNumber].sessionPercentage > newUserRow.bestPercentage || newUserRow.bestPercentage === undefined) {
-                    newUserRow.bestPercentage = session.sessionPercentage;
-                    newUserRow.bestSessionTTA = session.sessionSummary.averageTTA;
+                    newUserRow.bestPercentage = session.sessionPercentage;//then assign the best percentage to this one.
+                    newUserRow.bestSessionTTA = session.sessionSummary.averageTTA;//same with averageTTA
                 }
 
+                //if this sessionpercentage is worse than the current worstpercentage OR currently no worst percentage
                 if (session.sessionPercentage < newUserRow.worstPercentage || newUserRow.worstPercentage === undefined) {
-                    newUserRow.worstPercentage = session.sessionPercentage;
-                    newUserRow.worstSessionTTA = session.sessionSummary.averageTTA;
+                    newUserRow.worstPercentage = session.sessionPercentage;//assign this one to worstpercentage
+                    newUserRow.worstSessionTTA = session.sessionSummary.averageTTA;//same with averageTTA
                 }
                 newUserRow.avgPercentage += session.sessionPercentage; //it's not yet an avg percentage (just a sum of percentages thus far)
-                newUserRow.timeSpent += session.sessionSummary.timeElapsed;
+                newUserRow.timeSpent += session.sessionSummary.timeElapsed;//increment users time spent by time elapsed in this session
 
                 //iterate through questions for question statistics
-                for (var qNumber = 0; qNumber < session.doneQuestions.length; qNumber++) {
-                    var question = session.doneQuestions[qNumber];
+                for (var qNumber = 0; qNumber < session.doneQuestions.length; qNumber++) {//iterate through each doneQuestion
+                    var question = session.doneQuestions[qNumber];//init
                     var questionStats = questions[question.questionId];
 
                     if (questionStats) {
@@ -183,19 +185,18 @@ exports.generateAnsweredQuizSummary = function(req, res) {
                         if (userSessionNumber === 0) {
                             questionStats.avgFirstAttemptPercentage += question.points; //still needs to be divided by (pointsAwarded * returnData.usersCollection.length)
                         }
-                        if ((userSessionNumber + 1) === sessions.length) {
-                            questionStats.avgLastAttemptPercentage += question.points;
+                        if ((userSessionNumber + 1) === sessions.length) {//if last question
+                            questionStats.avgLastAttemptPercentage += question.points;//add points onto avg percentage. still needs to be divided.
                         }
                     }
                     else { //question doesn't exist anymore???
-                        // TODO
-                        session.doneQuestions.splice(qNumber);
+                        session.doneQuestions.splice(qNumber);//so remove the question...
                     }
 
 
                 }
 
-                //push a session to sessionsCollection
+                //push a session to sessionsCollection, element defined in place via object literal
                 returnData.sessionsCollection.push({
                     firstName: newUserRow.firstName,
                     lastName: newUserRow.lastName,
@@ -207,7 +208,7 @@ exports.generateAnsweredQuizSummary = function(req, res) {
                 //
             }
 
-            newUserRow.avgPercentage = newUserRow.avgPercentage / user.completedQuizSessions.length;
+            newUserRow.avgPercentage = newUserRow.avgPercentage / user.completedQuizSessions.length;//divide the current total percentage by the number of quizzes to get avg
             //sessionPercentage vars dealt with
 
             //increment total time spent with this user's time spent
