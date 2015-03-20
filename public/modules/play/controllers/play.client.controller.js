@@ -27,15 +27,14 @@ angular.module('play').controller('PlayController', ['$scope', '$stateParams', '
 			for(var i = 0; i < $scope.question.answers.length; i++){
 				var answerLines = [];
 				var wordsInAnswer = $scope.question.answers[i].split(' ');
-				for(var index = 0; index < wordsInAnswer.length; index++){
-					if( (wordsInAnswer[index] + answerLines[answerLines.length - 1]).length > 36 || wordsInAnswer[index].length > 36) {
+				for(var index = 0; index < wordsInAnswer.length; index++){//itereate through wordsInAnswer
+					if( (wordsInAnswer[index] + answerLines[answerLines.length - 1]).length > 36 || wordsInAnswer[index].length > 36) {//if adding word would make it greater than 36
 						answerLines.push(wordsInAnswer[index]);
 					}
 					else if(!answerLines[answerLines.length -1]){
 						answerLines.push(wordsInAnswer[index]);
 					}
 					else{
-						//
 						answerLines[answerLines.length - 1] = '' + answerLines[answerLines.length - 1] + ' ' + wordsInAnswer[index];
 					}
 				}

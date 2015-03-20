@@ -102,7 +102,7 @@ exports.generateAnsweredQuizSummary = function(req, res) {
     var
         quiz = req.quiz,
         users = req.quiz.users,
-        calcPercentage = function(got, max) {
+        calcPercentage = function(got, max) {//function returning percentage with input numerator and denominator.
             return (got / max) * 100;
         };
 
@@ -220,6 +220,8 @@ exports.generateAnsweredQuizSummary = function(req, res) {
     }
 
 
+    //iterate through questions
+    //doing the division of the summated total values.
     for (var index = 0; index < quiz.questions.length; index++) { //question is the questionId
         questions[quiz.questions[index].questionId].avgFirstAttemptPercentage = 100 * (questions[quiz.questions[index].questionId].avgFirstAttemptPercentage / (quiz.questions[index].pointsAwarded * returnData.usersCollection.length));
         questions[quiz.questions[index].questionId].avgPercentage = 100 * (questions[quiz.questions[index].questionId].avgPercentage / returnData.summaryStats.totalAttempts);

@@ -1,3 +1,4 @@
+//To understand recursion, see the bottom of this file #COMP3Revision
 'use strict';
 
 angular.module('quizzes').controller('ModalInstanceCtrl', ['$scope', '$modalInstance', '$location',
@@ -199,9 +200,9 @@ angular.module('quizzes').controller('QuizzesController', ['$scope', '$statePara
 		// Update existing Quiz
 		var quizComparator = [];
 		$scope.check = true;
-		$scope.noCheck = false;
+		$scope.noCheck = false;//here be dragons, prepare yourself
 		$scope.pattern = /^(i.)?imgur\.com\/[a-zA-Z0-9]{5,8}\.(?:jpe?g|gif|png)/;//regex checking for imgur url validity without protocol
-		$scope.update = function(check) {
+		$scope.update = function(check) {/* This is O(scary), but seems quick enough in practice. */
 			$scope.loading = true;
 			var quiz = $scope.quiz;
 			var change;
@@ -215,7 +216,7 @@ angular.module('quizzes').controller('QuizzesController', ['$scope', '$statePara
 					$scope.error = 'Question ' + qnum + ' changed.';
 					change = true;
 				};
-				if (older.length === 0) {
+				if (older.length === 0) {// If this comment is removed the program will blow up
 					change = true;
 					return;
 				}
@@ -258,7 +259,7 @@ angular.module('quizzes').controller('QuizzesController', ['$scope', '$statePara
 			}
 			if(change) {//check if quiz has changed
 
-				quizComparator = quiz.questions;
+				quizComparator = quiz.questions;/////////////////////////////////////// this is a well commented line
 
 				quiz.$update(function () {//update db HTTP PUT
 					$location.path('quizzes/' + quiz._id + '/edit');//redirect path to edit
@@ -344,49 +345,49 @@ angular.module('quizzes').controller('QuizzesController', ['$scope', '$statePara
 		$scope.validateImgurUrl = function(imgurUrl){//assigns valid imgur url value to true/false for html to act upon
 			//USES REGEX TO TEST
 			var imgurPattern = /^(i.)?imgur\.com\/[a-zA-Z0-9]{5,8}\.(?:jpe?g|gif|png)/;
-			if(imgurPattern.test(imgurUrl)){//if valid without protocol
+			if(imgurPattern.test(imgurUrl)){//if valid without protocol -- returns true/false
 
 				$scope.quiz.summary[0].quizImage = 'https://' + imgurUrl;//add protocol
-				$scope.validImgurUrl = true;
-				return $scope.quiz.summary[0].quizImage;
+				$scope.validImgurUrl = true;//assign true for view to show preview
+				return $scope.quiz.summary[0].quizImage;//return url to view.
 			}
 			else{
-				imgurPattern = /^https?:\/\/(i.)?imgur\.com\/[a-zA-Z0-9]{5,8}\.(?:jpe?g|gif|png)$/;
-				if(imgurPattern.test(imgurUrl)){
-					$scope.validImgurUrl = true;
-					return imgurUrl;
+				imgurPattern = /^https?:\/\/(i.)?imgur\.com\/[a-zA-Z0-9]{5,8}\.(?:jpe?g|gif|png)$/;//not test with the http protocol
+				if(imgurPattern.test(imgurUrl)){//returns true/false
+					$scope.validImgurUrl = true;//assign true for view to show preview
+					return imgurUrl;//return url to view
 				}
 			}
-			$scope.validImgurUrl = false;
-			return 'http://';
+			$scope.validImgurUrl = false;//url is not valid. will have returned by now if it is valid.
+			return 'http://';//return just the protocol.
 		};
 
 		$scope.validYoutubeUrl = false;
 
 		$scope.validateYoutubeUrl = function(youtubeUrl){
-			if(youtubeUrl.substring(0,4) !== 'http'){
-				youtubeUrl = 'https://' + youtubeUrl;
+			if(youtubeUrl.substring(0,4) !== 'http'){//check if starts with http. easy inexpensive check before expensive regexes.
+				youtubeUrl = 'https://' + youtubeUrl;//add protocol if http does not prepend domain
 			}
 			var youtubePattern = /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/;
-			//https://www.youtube.com/watch?v=be-LbSaEzZQ&list=RDHCXXF0DFZWayA
-			if(youtubePattern.test(youtubeUrl)){
+			if(youtubePattern.test(youtubeUrl)){//returns true/false
 
-				$scope.validYoutubeUrl = true;
+				$scope.validYoutubeUrl = true;//used to show live preview.
 
-				var matchInfo = youtubeUrl.match(youtubePattern);
-				var indexOfVideoId = matchInfo[0].indexOf(matchInfo[1]);
+				var matchInfo = youtubeUrl.match(youtubePattern);//object of info about the match.
+				var indexOfVideoId = matchInfo[0].indexOf(matchInfo[1]);//storing video id.
+				//making the URL an embeddable URL, regardless of whether the original link was embeddable:
 				$scope.quiz.summary[0].youtubeEmbedUrl = 'https://www.youtube.com/embed/' + matchInfo[0].substring(indexOfVideoId,indexOfVideoId+11) + '?' + matchInfo[0].substring(indexOfVideoId+12);
-				return $sce.trustAsResourceUrl($scope.quiz.summary[0].youtubeEmbedUrl);
+				return $sce.trustAsResourceUrl($scope.quiz.summary[0].youtubeEmbedUrl);//allow the user-submitted URL to be inserted into the view. must be a youtube URL because it was tested against the regex.
 			}
 			else {
-				$scope.validYoutubeUrl = false;
-				return 'http://';
+				$scope.validYoutubeUrl = false;//do not show live preview
+				return 'http://';//return non full url
 			}
 		};
 
-		$scope.selected = undefined;
+		$scope.selected = undefined;//initialise for search
 
-		$scope.toggleSelected = function(){
+		$scope.toggleSelected = function(){//toggles like a boolean
 			if($scope.selected === ''){
 				$scope.selected = undefined;
 			}
@@ -396,49 +397,63 @@ angular.module('quizzes').controller('QuizzesController', ['$scope', '$statePara
 
 		};
 
-		$scope.typeaheadCallback = function(){
-			for(var i = 0; i < $scope.quiz.questions.length; i++){
-				if($scope.quiz.questions[i].title === $scope.selected){
-					$scope.currentPage = i + 1;
-					break;
+		$scope.typeaheadCallback = function(){//function called on event of a click of the popup.
+			for(var i = 0; i < $scope.quiz.questions.length; i++){//iterate through each question
+				if($scope.quiz.questions[i].title === $scope.selected){//if title is the selected one.
+					$scope.currentPage = i + 1;//move page to the question page of the title clicked on.
+					break;//no need to iterate anymore, question found.
 				}
 			}
-			$scope.update(true);
-			$scope.selected = undefined;
+			$scope.update(true);//update the quiz with a check on whether to update or not.
+			$scope.selected = undefined;//toggle off.
 		};
 
-		$scope.validQuestionImgurUrl = false;
+		$scope.validQuestionImgurUrl = false;//initialise preview at false.
 
 		$scope.validateQuestionImgurUrl = function(imgurUrl){
-			var imgurPattern = /^(i.)?imgur\.com\/[a-zA-Z0-9]{5,8}\.(?:jpe?g|gif|png)/;
+			var imgurPattern = /^(i.)?imgur\.com\/[a-zA-Z0-9]{5,8}\.(?:jpe?g|gif|png)/;//REGULAR EXPRESSION without protocol
 			if(imgurPattern.test(imgurUrl)){//if valid without protocol
 				$scope.quiz.questions[$scope.currentPage-1].questionImage = 'https://' + imgurUrl;//add protocol
-				$scope.validQuestionImgurUrl = true;
-				return $scope.quiz.summary[0].quizImage;
+				$scope.validQuestionImgurUrl = true;//show preview
+				return $scope.quiz.summary[0].quizImage;//return url to the view.
 			}
-			else{
-				imgurPattern = /^https?:\/\/(i.)?imgur\.com\/[a-zA-Z0-9]{5,8}\.(?:jpe?g|gif|png)$/;
-				if(imgurPattern.test(imgurUrl)){
+			else{//smoke weed everyday
+				imgurPattern = /^https?:\/\/(i.)?imgur\.com\/[a-zA-Z0-9]{5,8}\.(?:jpe?g|gif|png)$/;//REGULAR EXPRESSION with protocol
+				if(imgurPattern.test(imgurUrl)){//if valid with protocol
 
-					$scope.validQuestionImgurUrl = true;
-					return imgurUrl;
+					$scope.validQuestionImgurUrl = true;//show preview
+					return imgurUrl;//return url to the view.
 				}
 			}
-			$scope.validQuestionImgurUrl = false;
-			return 'http://';
+			$scope.validQuestionImgurUrl = false;//won't get this far if not valid, do not show preview
+			return 'http://';//return http.
 		};
 
 		/** Settings tab functions / vars**/
 
-		$scope.questionValues = {
+		$scope.questionValues = {//initialise questionValues for settings tab
 			'timeLimit': 0,
 			'pointsAwarded': 1,
 			'attemptsBeforeHint': -1,
 			'questionType': 'Text Input'
 		};
 
-		$scope.changeAllTimeLimits = function(change){
-			var newValue = $scope.questionValues.timeLimit + change;
+		/**
+		 * For the brave souls who get this far: You are the chosen ones,
+		 * the valiant knights of programming who toil away, without rest,
+		 * fixing our most awful code. To you, true saviors, kings of men,
+		 * I say this: never gonna give you up, never gonna let you down,
+		 * never gonna run around and desert you. Never gonna make you cry,
+		 * never gonna say goodbye. Never gonna tell a lie and hurt you.
+		 */
+
+		//In all seriousness
+		//I salute you, if you are dedicated enough to read through all of my code.
+		//And for what? £7 per project?
+		//Good job.
+
+		$scope.changeAllTimeLimits = function(change){//change the time limit on settings page.
+			var newValue = $scope.questionValues.timeLimit + change;//increment time limit by change parameter and assign to newValue
 			if(newValue < 0){
 				$scope.questionValues.timeLimit = 0;
 			}
@@ -450,8 +465,8 @@ angular.module('quizzes').controller('QuizzesController', ['$scope', '$statePara
 			}
 		};
 
-		$scope.changeAllPointsAwarded = function(change){
-			var newValue = $scope.quiz.questions[$scope.currentPage-1].pointsAwarded + change;
+		$scope.changeAllPointsAwarded = function(change){//change the points awarded on settings page.
+			var newValue = $scope.quiz.questions[$scope.currentPage-1].pointsAwarded + change;//increment pointsAwarded by change parameter and assign to newValue
 			if(newValue < 1){
 				$scope.questionValues.pointsAwarded = 1;
 			}
@@ -463,8 +478,8 @@ angular.module('quizzes').controller('QuizzesController', ['$scope', '$statePara
 			}
 		};
 
-		$scope.changeAllAttemptsBeforeHint = function(change){
-			var newValue = $scope.questionValues.attemptsBeforeHint + change;
+		$scope.changeAllAttemptsBeforeHint = function(change){//change the attempts before hint on settings page.
+			var newValue = $scope.questionValues.attemptsBeforeHint + change;//increment attempts before hint by change parameter and assign to newValue
 			if(newValue < -1){
 				$scope.questionValues.attemptsBeforeHint = -1;
 			}
@@ -476,56 +491,56 @@ angular.module('quizzes').controller('QuizzesController', ['$scope', '$statePara
 			}
 		};
 
-		$scope.applyAllQuestionDataValues = function(){
-			for(var i = 0; i < $scope.quiz.questions.length; i++){
-				$scope.quiz.questions[i].timeLimit = $scope.questionValues.timeLimit;
+		$scope.applyAllQuestionDataValues = function(){//apply values for every question.
+			for(var i = 0; i < $scope.quiz.questions.length; i++){//iterate through each question
+				$scope.quiz.questions[i].timeLimit = $scope.questionValues.timeLimit;//and assign all 4 of the attributes...
 				$scope.quiz.questions[i].pointsAwarded = $scope.questionValues.pointsAwarded;
 				$scope.quiz.questions[i].attemptsBeforeHint = $scope.questionValues.attemptsBeforeHint;
 				$scope.quiz.questions[i].sortOptionsAlphabetically = $scope.questionValues.sortOptionsAlphabetically;
 			}
-			$scope.update(false);
+			$scope.update(false);//update without a check. has been a change.
 		};
 
-		$scope.setAllQuestionTypes = function(qType){
+		$scope.setAllQuestionTypes = function(qType){//set question type for each question if I can, by qtype passed in
 			var i;//declare my iterator for my for loops
-			if(qType === 'Text Input'){
-				for(i = 0; i < $scope.quiz.questions.length; i++){
-					$scope.quiz.questions[i].questionType = 'Text Input';
+			if(qType === 'Text Input'){//set all to text input
+				for(i = 0; i < $scope.quiz.questions.length; i++){//iterate through each question
+					$scope.quiz.questions[i].questionType = 'Text Input';//assigning qtype to text input...
 				}
-				$scope.allQuestionsValuesError = false;
+				$scope.allQuestionsValuesError = false;//no errors because every question can qualify for text input.
 			}
-			else if(qType === 'Multiple Choice'){
-				var notQualified = [];
-				for(i = 0; i < $scope.quiz.questions.length; i++){
-					if($scope.quiz.questions[i].multipleChoiceValidity){
-						$scope.quiz.questions[i].questionType = 'Multiple Choice';
+			else if(qType === 'Multiple Choice'){//set question type  to text input, checking if qualifies
+				var notQualified = [];//initialise array of not qualified questions
+				for(i = 0; i < $scope.quiz.questions.length; i++){//iterate through questions
+					if($scope.quiz.questions[i].multipleChoiceValidity){//if valid
+						$scope.quiz.questions[i].questionType = 'Multiple Choice';//set to multiple choice
 					}
-					else{
+					else{//else set to text input
 						$scope.quiz.questions[i].questionType = 'Text Input';
-						notQualified.push((i+1).toString());
+						notQualified.push((i+1).toString());//push to notqualified array
 					}
 				}
-				if(notQualified !== []){
+				if(notQualified !== []){//if there are q's that do not qualify based on length of array
 					//Build up error string of which ones do not qualify...
 					if(notQualified.length > 2){
 						var endString = ' and ' + notQualified.pop() + ' do not qualify for Multiple Choice.';
 						var startString = 'Questions ';
 						var midString = '';
-						for(i = 0; i < notQualified.length - 1; i++){
-							midString = midString + notQualified[i] + ', ';
+						for(i = 0; i < notQualified.length - 1; i++){//iterate through questions
+							midString = midString + notQualified[i] + ', ';//adding the number plus a comma and a space for all the questions that aren't the last one...
 						}
-						midString = midString + notQualified.pop();
-						$scope.allQuestionsValuesError = startString + midString + endString;
+						midString = midString + notQualified.pop();//add last question number to the mid string
+						$scope.allQuestionsValuesError = startString + midString + endString;//add all the strings!
 					}
-					else if(notQualified.length === 2){
+					else if(notQualified.length === 2){//only 2 so it's just questions x and y.
 						$scope.allQuestionsValuesError = 'Questions ' + notQualified[0] + ' and ' + notQualified[1] + ' do not qualify for Multiple Choice';
 					}
-					else{
+					else{//just one question: question x.
 						$scope.allQuestionsValuesError = 'Question ' + notQualified[0] + ' does not qualify for Multiple Choice';
 					}
 				}
-				else{
-					$scope.allQuestionsValuesError = false;
+				else{// This comment is self explanatory.
+					$scope.allQuestionsValuesError = false;//else no errors
 				}
 			}
 
@@ -536,3 +551,4 @@ angular.module('quizzes').controller('QuizzesController', ['$scope', '$statePara
 
 	}
 ]);
+//To understand recursion, see the top of this file #COMP3Revision

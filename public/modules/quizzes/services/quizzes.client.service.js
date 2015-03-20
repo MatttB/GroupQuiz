@@ -14,8 +14,8 @@ angular.module('quizzes').factory('Quizzes', ['$resource',
 
 
 /* global moment: false *///lets jshint know that moment is a global variable so that it doesn't flag up errors...
-angular.module('quizzes').filter('msToHuman', function(){
-	var m, h, d, y;
+angular.module('quizzes').filter('msToHuman', function(){//takes duration in ms, returns human readable string form. comments in each block indicate return type.
+	var m, h, d, y;//initalise month/minute / day / year vars
 	return function(input){
 		if(input < 1000){
 			return Math.floor(input).toString() + 'ms';
